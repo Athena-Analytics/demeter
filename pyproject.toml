@@ -1,6 +1,6 @@
 [project]
 name = "demeter"
-version = "0.1.1"
+version = "0.1.2"
 description = "Handle all http request"
 authors = [
     { name = "windows@home", email = "programlfyh@proton.me" }
