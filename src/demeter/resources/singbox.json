@@ -140,6 +140,14 @@
             "default": "JMS-s801"
         },
         {
+            "type": "urltest",
+            "tag": "update_config",
+            "outbounds": [
+                "Proxy_chain",
+                "Vmess_ws"
+            ]
+        },
+        {
             "type": "selector",
             "tag": "GLOBAL",
             "outbounds": [
@@ -173,6 +181,12 @@
             {
                 "clash_mode": "global",
                 "outbound": "GLOBAL"
+            },
+            {
+                "domain_suffix": [
+                    "leafsyang.xyz"
+                ],
+                "outbound": "update_config"
             },
             {
                 "domain_suffix": [

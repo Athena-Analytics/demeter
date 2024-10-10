@@ -141,6 +141,14 @@
             "default": "JMS-s801"
         },
         {
+            "type": "urltest",
+            "tag": "update_config",
+            "outbounds": [
+                "Proxy_chain",
+                "Vmess_ws"
+            ]
+        },
+        {
             "type": "selector",
             "tag": "GLOBAL",
             "outbounds": [
@@ -177,6 +185,12 @@
             },
             {
                 "domain_suffix": [
+                    "leafsyang.xyz"
+                ],
+                "outbound": "update_config"
+            },
+            {
+                "domain_suffix": [
                     "leafsyang.com"
                 ],
                 "ip_cidr": [
@@ -191,8 +205,12 @@
                     "cedarhill.co"
                 ],
                 "domain_keyword": [
+                    "appsflyer",
                     "bochk",
                     "ieltsonlinetests"
+                ],
+                "ip_cidr": [
+                    "172.16.0.168/32"
                 ],
                 "clash_mode": "rule",
                 "outbound": "direct-out"
