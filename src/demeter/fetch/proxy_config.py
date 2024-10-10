@@ -119,7 +119,7 @@ class ProxyConfig(BaseRequest):
                 if tls and sni != "":
                     other_proxy_component["servername"] = sni
                 if network == "ws":
-                    other_proxy_component["ws-opt"] = ws_option
+                    other_proxy_component["ws-opts"] = ws_option
 
             elif tool_type == "singbox":
                 other_proxy_component = {
