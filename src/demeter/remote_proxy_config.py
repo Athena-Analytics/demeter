@@ -1,6 +1,7 @@
 """Remote proxy config method"""
 
 import json
+import re
 
 import yaml
 
@@ -33,7 +34,7 @@ class RemoteProxyConfig:
         """
         if self.tool_type == "clash":
             remote_proxy_config = self.clash_remote_proxy_config()
-        elif self.tool_type == "singbox":
+        elif re.search("singbox", self.tool_type):
             remote_proxy_config = self.singbox_remote_proxy_config()
         elif self.tool_type == "shadowrocket":
             remote_proxy_config = self.shadowrocket_remote_proxy_config()
@@ -89,7 +90,9 @@ class RemoteProxyConfig:
 
         new_outbounds = []
         for outbound in proxy_config["outbounds"]:
-            if outbound["type"] in ["urltest", "selector"]:
+            if outbound["type"] in ["urltest", "selector"] and "JMS" in ",".join(
+                outbound["outbounds"]
+            ):
                 new_proxies = list(
                     filter(
                         lambda x: x if "JMS" not in x else None, outbound["outbounds"]
@@ -110,7 +113,7 @@ class RemoteProxyConfig:
         """
         proxies = self.proxy_config.get_proxies(self.tool_type)
 
-        clash_file = self.cf.get_file_from_r2("clash.yaml")
+        clash_file = self.cf.get_file_from_r2(f"{self.tool_type}.yaml")
         clash_configuration_template = yaml.safe_load(clash_file)
         clash_configuration_template["proxies"] = proxies
 
@@ -136,7 +139,7 @@ class RemoteProxyConfig:
             return proxies
 
         proxies = add_proxy_chain(self.proxy_config.get_proxies(self.tool_type))
-        singbox_file = self.cf.get_file_from_r2("singbox.json")
+        singbox_file = self.cf.get_file_from_r2(f"{self.tool_type}.json")
 
         singbox_configuration_template = json.loads(singbox_file)
         singbox_configuration_template["outbounds"].extend(proxies)
@@ -153,5 +156,5 @@ class RemoteProxyConfig:
         """
         Get shadow rocket remote proxy config
         """
-        shadowrocket_file = self.cf.get_file_from_r2("shadowrocket.conf")
+        shadowrocket_file = self.cf.get_file_from_r2(f"{self.tool_type}.conf")
         return shadowrocket_file

@@ -2,6 +2,7 @@
     "log": {
         "disabled": false,
         "level": "debug",
+        "output": "singbox.log",
         "timestamp": true
     },
     "dns": {
@@ -140,6 +141,14 @@
             "default": "JMS-s801"
         },
         {
+            "type": "urltest",
+            "tag": "update_config",
+            "outbounds": [
+                "Proxy_chain",
+                "Vmess_ws"
+            ]
+        },
+        {
             "type": "selector",
             "tag": "GLOBAL",
             "outbounds": [
@@ -176,6 +185,12 @@
             },
             {
                 "domain_suffix": [
+                    "leafsyang.xyz"
+                ],
+                "outbound": "update_config"
+            },
+            {
+                "domain_suffix": [
                     "leafsyang.com"
                 ],
                 "ip_cidr": [
@@ -190,8 +205,12 @@
                     "cedarhill.co"
                 ],
                 "domain_keyword": [
+                    "appsflyer",
                     "bochk",
                     "ieltsonlinetests"
+                ],
+                "ip_cidr": [
+                    "172.16.0.168/32"
                 ],
                 "clash_mode": "rule",
                 "outbound": "direct-out"
@@ -380,10 +399,12 @@
     },
     "experimental": {
         "cache_file": {
-            "enabled": true
+            "enabled": true,
+            "path": "cache.db"
         },
         "clash_api": {
             "external_controller": "127.0.0.1:9090",
+            "external_ui": "D:/sing-box/ui",
             "external_ui_download_detour": "auto_select",
             "default_mode": "rule"
         }
