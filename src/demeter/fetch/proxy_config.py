@@ -1,5 +1,6 @@
 """Proxy config base method"""
 
+import re
 from ast import literal_eval
 
 from demeter.fetch.base import BaseRequest
@@ -54,7 +55,7 @@ class ProxyConfig(BaseRequest):
                         "udp": True,
                     }
                 )
-            elif tool_type == "singbox":
+            elif re.search("singbox", tool_type):
                 proxy_component.update(
                     {
                         "type": "shadowsocks",
@@ -121,7 +122,7 @@ class ProxyConfig(BaseRequest):
                 if network == "ws":
                     other_proxy_component["ws-opts"] = ws_option
 
-            elif tool_type == "singbox":
+            elif re.search("singbox", tool_type):
                 other_proxy_component = {
                     "tag": proxy_name if proxy_name != "Vmess-ws" else "Vmess_ws",
                     "server_port": int(port),
