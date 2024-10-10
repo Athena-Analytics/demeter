@@ -1,0 +1,394 @@
+{
+    "log": {
+        "disabled": false,
+        "level": "debug",
+        "output": "singbox.log",
+        "timestamp": true
+    },
+    "dns": {
+        "servers": [
+            {
+                "tag": "default-dns",
+                "address": "223.5.5.5",
+                "detour": "direct-out"
+            },
+            {
+                "tag": "system-dns",
+                "address": "local",
+                "detour": "direct-out"
+            },
+            {
+                "tag": "block-dns",
+                "address": "rcode://name_error"
+            },
+            {
+                "tag": "google_dns",
+                "address": "https://dns.google/dns-query",
+                "address_resolver": "default-dns",
+                "address_strategy": "ipv4_only",
+                "strategy": "ipv4_only",
+                "client_subnet": "1.0.1.0"
+            }
+        ],
+        "rules": [
+            {
+                "outbound": [
+                    "any"
+                ],
+                "server": "default-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "server": "default-dns"
+            },
+            {
+                "clash_mode": "global",
+                "server": "google_dns"
+            },
+            {
+                "rule_set": [
+                    "cnsite"
+                ],
+                "server": "default-dns"
+            }
+        ],
+        "strategy": "ipv4_only",
+        "disable_cache": false,
+        "disable_expire": false,
+        "independent_cache": false,
+        "final": "google_dns"
+    },
+    "inbounds": [
+        {
+            "type": "tun",
+            "tag": "tun-in",
+            "interface_name": "singtun0",
+            "inet4_address": "172.19.0.1/30",
+            "mtu": 9000,
+            "gso": true,
+            "auto_route": true,
+            "stack": "system",
+            "sniff": true,
+            "sniff_override_destination": false
+        }
+    ],
+    "outbounds": [
+        {
+            "type": "direct",
+            "tag": "direct-out",
+            "routing_mark": 100
+        },
+        {
+            "type": "block",
+            "tag": "block-out"
+        },
+        {
+            "type": "dns",
+            "tag": "dns-out"
+        },
+        {
+            "type": "urltest",
+            "tag": "auto_select",
+            "outbounds": [
+                "JMS-s1",
+                "JMS-s2",
+                "JMS-s3",
+                "JMS-s4",
+                "JMS-s5",
+                "JMS-s801"
+            ]
+        },
+        {
+            "type": "selector",
+            "tag": "airport_select",
+            "outbounds": [
+                "JMS-s1",
+                "JMS-s2",
+                "JMS-s3",
+                "JMS-s4",
+                "JMS-s5",
+                "JMS-s801"
+            ],
+            "default": "JMS-s4"
+        },
+        {
+            "type": "selector",
+            "tag": "manual_select",
+            "outbounds": [
+                "direct-out",
+                "Proxy_chain",
+                "Vmess_ws",
+                "JMS-s1",
+                "JMS-s2",
+                "JMS-s3",
+                "JMS-s4",
+                "JMS-s5",
+                "JMS-s801"
+            ],
+            "default": "Proxy_chain"
+        },
+        {
+            "type": "selector",
+            "tag": "vps_select",
+            "outbounds": [
+                "JMS-s1",
+                "JMS-s2",
+                "JMS-s3",
+                "JMS-s4",
+                "JMS-s5",
+                "JMS-s801"
+            ],
+            "default": "JMS-s801"
+        },
+        {
+            "type": "selector",
+            "tag": "GLOBAL",
+            "outbounds": [
+                "direct-out",
+                "Proxy_chain",
+                "Vmess_ws",
+                "JMS-s1",
+                "JMS-s2",
+                "JMS-s3",
+                "JMS-s4",
+                "JMS-s5",
+                "JMS-s801"
+            ],
+            "default": "Proxy_chain"
+        }
+    ],
+    "route": {
+        "rules": [
+            {
+                "inbound": "dns-in",
+                "outbound": "dns-out"
+            },
+            {
+                "protocol": "dns",
+                "outbound": "dns-out"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct-out"
+            },
+            {
+                "clash_mode": "global",
+                "outbound": "GLOBAL"
+            },
+            {
+                "domain_suffix": [
+                    "leafsyang.com"
+                ],
+                "ip_cidr": [
+                    "144.126.145.148/32",
+                    "208.54.1.1/16"
+                ],
+                "clash_mode": "rule",
+                "outbound": "vps_select"
+            },
+            {
+                "domain_suffix": [
+                    "cedarhill.co"
+                ],
+                "domain_keyword": [
+                    "bochk",
+                    "ieltsonlinetests"
+                ],
+                "clash_mode": "rule",
+                "outbound": "direct-out"
+            },
+            {
+                "rule_set": [
+                    "ads"
+                ],
+                "clash_mode": "rule",
+                "outbound": "block-out"
+            },
+            {
+                "rule_set": [
+                    "apple"
+                ],
+                "clash_mode": "rule",
+                "outbound": "manual_select"
+            },
+            {
+                "rule_set": [
+                    "aws"
+                ],
+                "clash_mode": "rule",
+                "outbound": "manual_select"
+            },
+            {
+                "rule_set": [
+                    "disney"
+                ],
+                "clash_mode": "rule",
+                "outbound": "manual_select"
+            },
+            {
+                "rule_set": [
+                    "facebook"
+                ],
+                "clash_mode": "rule",
+                "outbound": "manual_select"
+            },
+            {
+                "rule_set": [
+                    "google"
+                ],
+                "clash_mode": "rule",
+                "outbound": "manual_select"
+            },
+            {
+                "rule_set": [
+                    "microsoft"
+                ],
+                "clash_mode": "rule",
+                "outbound": "manual_select"
+            },
+            {
+                "rule_set": [
+                    "netflix"
+                ],
+                "clash_mode": "rule",
+                "outbound": "manual_select"
+            },
+            {
+                "rule_set": [
+                    "openai"
+                ],
+                "clash_mode": "rule",
+                "outbound": "manual_select"
+            },
+            {
+                "rule_set": [
+                    "paypal"
+                ],
+                "clash_mode": "rule",
+                "outbound": "manual_select"
+            },
+            {
+                "rule_set": [
+                    "stripe"
+                ],
+                "clash_mode": "rule",
+                "outbound": "manual_select"
+            },
+            {
+                "rule_set": [
+                    "cnip",
+                    "cnsite"
+                ],
+                "clash_mode": "rule",
+                "outbound": "direct-out"
+            }
+        ],
+        "rule_set": [
+            {
+                "type": "remote",
+                "tag": "ads",
+                "format": "binary",
+                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-category-ads-all.srs",
+                "download_detour": "Vmess_ws"
+            },
+            {
+                "type": "remote",
+                "tag": "apple",
+                "format": "binary",
+                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-apple.srs",
+                "download_detour": "Vmess_ws"
+            },
+            {
+                "type": "remote",
+                "tag": "aws",
+                "format": "binary",
+                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-aws.srs",
+                "download_detour": "Vmess_ws"
+            },
+            {
+                "type": "remote",
+                "tag": "cnip",
+                "format": "binary",
+                "url": "https://github.com/SagerNet/sing-geoip/raw/rule-set/geoip-cn.srs",
+                "download_detour": "Vmess_ws"
+            },
+            {
+                "type": "remote",
+                "tag": "cnsite",
+                "format": "binary",
+                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-cn.srs",
+                "download_detour": "Vmess_ws"
+            },
+            {
+                "type": "remote",
+                "tag": "disney",
+                "format": "binary",
+                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-disney.srs",
+                "download_detour": "Vmess_ws"
+            },
+            {
+                "type": "remote",
+                "tag": "facebook",
+                "format": "binary",
+                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-facebook.srs",
+                "download_detour": "Vmess_ws"
+            },
+            {
+                "type": "remote",
+                "tag": "google",
+                "format": "binary",
+                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-google.srs",
+                "download_detour": "Vmess_ws"
+            },
+            {
+                "type": "remote",
+                "tag": "microsoft",
+                "format": "binary",
+                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-microsoft.srs",
+                "download_detour": "Vmess_ws"
+            },
+            {
+                "type": "remote",
+                "tag": "netflix",
+                "format": "binary",
+                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-netflix.srs",
+                "download_detour": "Vmess_ws"
+            },
+            {
+                "type": "remote",
+                "tag": "openai",
+                "format": "binary",
+                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-openai.srs",
+                "download_detour": "Vmess_ws"
+            },
+            {
+                "type": "remote",
+                "tag": "paypal",
+                "format": "binary",
+                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-paypal.srs",
+                "download_detour": "Vmess_ws"
+            },
+            {
+                "type": "remote",
+                "tag": "stripe",
+                "format": "binary",
+                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-stripe.srs",
+                "download_detour": "Vmess_ws"
+            }
+        ],
+        "auto_detect_interface": true,
+        "final": "manual_select"
+    },
+    "experimental": {
+        "cache_file": {
+            "enabled": true,
+            "path": "cache.db"
+        },
+        "clash_api": {
+            "external_controller": "127.0.0.1:9090",
+            "external_ui": "D:/sing-box/ui",
+            "external_ui_download_detour": "auto_select",
+            "default_mode": "rule"
+        }
+    }
+}
