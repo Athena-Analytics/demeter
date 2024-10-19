@@ -44,81 +44,57 @@ class RemoteProxyConfig:
         return remote_proxy_config
 
     @staticmethod
-    def _replace_airport_for_clash(proxy_config: dict) -> dict:
+    def _replace_airport(
+        temp_config: dict,
+        name_key: str,
+        proxy_key: str,
+        group_key: str,
+    ) -> dict:
+        def _replace_default_for_singbox(o: dict, j: list) -> dict:
+            if "default" in o and "JMS" in o["default"]:
+                n = o["default"].split("-")[1]
+                o["default"] = list(filter(lambda x: n in x, j))[0]
+            return o
 
-        jms_names = [
-            proxy["name"] for proxy in proxy_config["proxies"] if "JMS" in proxy["name"]
-        ]
+        jms = [c[name_key] for c in temp_config[proxy_key] if "JMS" in c[name_key]]
 
-        new_proxy_groups = []
-        for proxy_group in proxy_config["proxy-groups"]:
-            tmp_proxy_group = proxy_group.copy()
-            proxies_names = ",".join(proxy_group["proxies"])
-
-            if "JMS" in proxies_names:
-                new_proxies = list(
-                    filter(
-                        lambda x: x if "JMS" not in x else None, proxy_group["proxies"]
-                    )
+        _new = []
+        for group in temp_config[group_key]:
+            proxy_type = [
+                "relay",
+                "fallback",
+                "url-test",
+                "select",
+                "urltest",
+                "selector",
+            ]
+            if group["type"] in proxy_type and "JMS" in ",".join(group[proxy_key]):
+                no_jms = list(
+                    filter(lambda x: x if "JMS" not in x else None, group[proxy_key])
                 )
+                no_jms.extend(jms)
+                group[proxy_key] = no_jms
+                if name_key == "outbound":
+                    group = _replace_default_for_singbox(group, jms)
 
-                new_proxies.extend(jms_names)
-                tmp_proxy_group["proxies"] = new_proxies
+            _new.append(group)
 
-                new_proxy_groups.append(tmp_proxy_group)
-            else:
-                new_proxy_groups.append(proxy_group)
+        temp_config[group_key] = _new
 
-        proxy_config["proxy-groups"] = new_proxy_groups
-
-        return proxy_config
-
-    @staticmethod
-    def _replace_airport_for_singbox(proxy_config: dict) -> dict:
-
-        def replace_default_jms(outbound: dict) -> dict:
-            if "default" in outbound and "JMS" in outbound["default"]:
-                jms_num = outbound["default"].split("-")[1]
-                outbound["default"] = list(filter(lambda x: jms_num in x, jms_names))[0]
-            return outbound
-
-        jms_names = [
-            outbound["tag"]
-            for outbound in proxy_config["outbounds"]
-            if "JMS" in outbound["tag"]
-        ]
-
-        new_outbounds = []
-        for outbound in proxy_config["outbounds"]:
-            if outbound["type"] in ["urltest", "selector"] and "JMS" in ",".join(
-                outbound["outbounds"]
-            ):
-                new_proxies = list(
-                    filter(
-                        lambda x: x if "JMS" not in x else None, outbound["outbounds"]
-                    )
-                )
-                new_proxies.extend(jms_names)
-                outbound["outbounds"] = new_proxies
-                outbound = replace_default_jms(outbound)
-
-            new_outbounds.append(outbound)
-
-        proxy_config["outbounds"] = new_outbounds
-        return proxy_config
+        return temp_config
 
     def clash_remote_proxy_config(self):
         """
         Get clash remote proxy config
         """
         proxies = self.proxy_config.get_proxies(self.tool_type)
-
         clash_file = self.cf.get_file_from_r2(f"{self.tool_type}.yaml")
+
         clash_configuration_template = yaml.safe_load(clash_file)
         clash_configuration_template["proxies"] = proxies
 
-        clash_configuration = self._replace_airport_for_clash(
-            clash_configuration_template
+        clash_configuration = self._replace_airport(
+            clash_configuration_template, "name", "proxies", "proxy-groups"
         )
 
         yaml_data = yaml.dump(clash_configuration, allow_unicode=True)
@@ -144,8 +120,8 @@ class RemoteProxyConfig:
         singbox_configuration_template = json.loads(singbox_file)
         singbox_configuration_template["outbounds"].extend(proxies)
 
-        singbox_configuration = self._replace_airport_for_singbox(
-            singbox_configuration_template
+        singbox_configuration = self._replace_airport(
+            singbox_configuration_template, "tag", "outbounds", "outbounds"
         )
 
         json_data = json.dumps(singbox_configuration, indent=4)

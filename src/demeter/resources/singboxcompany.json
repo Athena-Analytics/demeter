@@ -46,8 +46,19 @@
                 "server": "google_dns"
             },
             {
-                "rule_set": [
-                    "cnsite"
+                "type": "logical",
+                "mode": "and",
+                "rules": [
+                    {
+                        "rule_set": [
+                            "cnsite0"
+                        ]
+                    },
+                    {
+                        "rule_set": [
+                            "cnsite1"
+                        ]
+                    }
                 ],
                 "server": "default-dns"
             }
@@ -205,14 +216,42 @@
                     "cedarhill.co"
                 ],
                 "domain_keyword": [
+                    "adjust",
                     "appsflyer",
                     "bochk",
                     "ieltsonlinetests"
                 ],
                 "ip_cidr": [
-                    "172.16.0.168/32"
+                    "172.27.0.168/32"
                 ],
                 "clash_mode": "rule",
+                "outbound": "direct-out"
+            },
+            {
+                "rule_set": [
+                    "cnip"
+                ],
+                "clash_mode": "rule",
+                "outbound": "direct-out"
+            },
+            {
+                "type": "logical",
+                "mode": "and",
+                "rules": [
+                    {
+                        "rule_set": [
+                            "cnsite0"
+                        ]
+                    },
+                    {
+                        "rule_set": [
+                            "cnsite1"
+                        ]
+                    },
+                    {
+                        "clash_mode": "rule"
+                    }
+                ],
                 "outbound": "direct-out"
             },
             {
@@ -291,14 +330,6 @@
                 ],
                 "clash_mode": "rule",
                 "outbound": "manual_select"
-            },
-            {
-                "rule_set": [
-                    "cnip",
-                    "cnsite"
-                ],
-                "clash_mode": "rule",
-                "outbound": "direct-out"
             }
         ],
         "rule_set": [
@@ -306,33 +337,40 @@
                 "type": "remote",
                 "tag": "ads",
                 "format": "binary",
-                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-category-ads-all.srs",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-ads-all.srs",
                 "download_detour": "Vmess_ws"
             },
             {
                 "type": "remote",
                 "tag": "apple",
                 "format": "binary",
-                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-apple.srs",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/apple.srs",
                 "download_detour": "Vmess_ws"
             },
             {
                 "type": "remote",
                 "tag": "aws",
                 "format": "binary",
-                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-aws.srs",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/aws.srs",
                 "download_detour": "Vmess_ws"
             },
             {
                 "type": "remote",
                 "tag": "cnip",
                 "format": "binary",
-                "url": "https://github.com/SagerNet/sing-geoip/raw/rule-set/geoip-cn.srs",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geoip/cn.srs",
                 "download_detour": "Vmess_ws"
             },
             {
                 "type": "remote",
-                "tag": "cnsite",
+                "tag": "cnsite0",
+                "format": "binary",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/cn.srs",
+                "download_detour": "Vmess_ws"
+            },
+            {
+                "type": "remote",
+                "tag": "cnsite1",
                 "format": "binary",
                 "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-cn.srs",
                 "download_detour": "Vmess_ws"
@@ -341,56 +379,56 @@
                 "type": "remote",
                 "tag": "disney",
                 "format": "binary",
-                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-disney.srs",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/disney.srs",
                 "download_detour": "Vmess_ws"
             },
             {
                 "type": "remote",
                 "tag": "facebook",
                 "format": "binary",
-                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-facebook.srs",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/facebook.srs",
                 "download_detour": "Vmess_ws"
             },
             {
                 "type": "remote",
                 "tag": "google",
                 "format": "binary",
-                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-google.srs",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/google.srs",
                 "download_detour": "Vmess_ws"
             },
             {
                 "type": "remote",
                 "tag": "microsoft",
                 "format": "binary",
-                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-microsoft.srs",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/microsoft.srs",
                 "download_detour": "Vmess_ws"
             },
             {
                 "type": "remote",
                 "tag": "netflix",
                 "format": "binary",
-                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-netflix.srs",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/netflix.srs",
                 "download_detour": "Vmess_ws"
             },
             {
                 "type": "remote",
                 "tag": "openai",
                 "format": "binary",
-                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-openai.srs",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/openai.srs",
                 "download_detour": "Vmess_ws"
             },
             {
                 "type": "remote",
                 "tag": "paypal",
                 "format": "binary",
-                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-paypal.srs",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/paypal.srs",
                 "download_detour": "Vmess_ws"
             },
             {
                 "type": "remote",
                 "tag": "stripe",
                 "format": "binary",
-                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-stripe.srs",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/stripe.srs",
                 "download_detour": "Vmess_ws"
             }
         ],
