@@ -25,6 +25,7 @@ colorama==0.4.6
     # via click
     # via tqdm
 dask==2024.9.0
+    # via dask
     # via dask-expr
     # via swifter
 dask-expr==1.1.14

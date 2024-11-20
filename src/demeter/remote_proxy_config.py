@@ -48,8 +48,9 @@ class RemoteProxyConfig:
         temp_config: dict,
         name_key: str,
         proxy_key: str,
-        group_key: str,
+        proxy_group_key: str,
     ) -> dict:
+        
         def _replace_default_for_singbox(o: dict, j: list) -> dict:
             if "default" in o and "JMS" in o["default"]:
                 n = o["default"].split("-")[1]
@@ -59,7 +60,7 @@ class RemoteProxyConfig:
         jms = [c[name_key] for c in temp_config[proxy_key] if "JMS" in c[name_key]]
 
         _new = []
-        for group in temp_config[group_key]:
+        for group in temp_config[proxy_group_key]:
             proxy_type = [
                 "relay",
                 "fallback",
@@ -74,12 +75,11 @@ class RemoteProxyConfig:
                 )
                 no_jms.extend(jms)
                 group[proxy_key] = no_jms
-                if name_key == "outbound":
-                    group = _replace_default_for_singbox(group, jms)
+                group = _replace_default_for_singbox(group, jms)
 
             _new.append(group)
 
-        temp_config[group_key] = _new
+        temp_config[proxy_group_key] = _new
 
         return temp_config
 
