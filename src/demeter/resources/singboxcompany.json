@@ -13,11 +13,6 @@
                 "detour": "direct-out"
             },
             {
-                "tag": "system-dns",
-                "address": "local",
-                "detour": "direct-out"
-            },
-            {
                 "tag": "block-dns",
                 "address": "rcode://name_error"
             },
@@ -27,7 +22,7 @@
                 "address_resolver": "default-dns",
                 "address_strategy": "ipv4_only",
                 "strategy": "ipv4_only",
-                "client_subnet": "1.0.1.0"
+                "client_subnet": "1.1.1.1"
             }
         ],
         "rules": [
@@ -128,7 +123,7 @@
             "outbounds": [
                 "direct-out",
                 "Proxy_chain",
-                "Vmess_ws",
+                "Vless_vision",
                 "JMS-s1",
                 "JMS-s2",
                 "JMS-s3",
@@ -156,7 +151,7 @@
             "tag": "update_config",
             "outbounds": [
                 "Proxy_chain",
-                "Vmess_ws"
+                "Vless_vision"
             ]
         },
         {
@@ -165,7 +160,7 @@
             "outbounds": [
                 "direct-out",
                 "Proxy_chain",
-                "Vmess_ws",
+                "Vless_vision",
                 "JMS-s1",
                 "JMS-s2",
                 "JMS-s3",
@@ -178,10 +173,6 @@
     ],
     "route": {
         "rules": [
-            {
-                "inbound": "dns-in",
-                "outbound": "dns-out"
-            },
             {
                 "protocol": "dns",
                 "outbound": "dns-out"
@@ -216,20 +207,21 @@
                     "cedarhill.co"
                 ],
                 "domain_keyword": [
-                    "adjust",
-                    "appsflyer",
                     "bochk",
                     "ieltsonlinetests"
-                ],
-                "ip_cidr": [
-                    "172.27.0.168/32"
                 ],
                 "clash_mode": "rule",
                 "outbound": "direct-out"
             },
             {
-                "rule_set": [
-                    "cnip"
+                "domain_keyword": [
+                    "adjust",
+                    "appsflyer",
+                    "ksztone"
+                ],
+                "ip_cidr": [
+                    "172.27.0.168/32",
+                    "172.22.20.230/32"
                 ],
                 "clash_mode": "rule",
                 "outbound": "direct-out"
@@ -239,6 +231,9 @@
                 "mode": "and",
                 "rules": [
                     {
+                        "clash_mode": "rule"
+                    },
+                    {
                         "rule_set": [
                             "cnsite0"
                         ]
@@ -247,9 +242,6 @@
                         "rule_set": [
                             "cnsite1"
                         ]
-                    },
-                    {
-                        "clash_mode": "rule"
                     }
                 ],
                 "outbound": "direct-out"
@@ -330,6 +322,13 @@
                 ],
                 "clash_mode": "rule",
                 "outbound": "manual_select"
+            },
+            {
+                "rule_set": [
+                    "cnip"
+                ],
+                "clash_mode": "rule",
+                "outbound": "direct-out"
             }
         ],
         "rule_set": [
@@ -338,98 +337,98 @@
                 "tag": "ads",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-ads-all.srs",
-                "download_detour": "Vmess_ws"
+                "download_detour": "Vless_vision"
             },
             {
                 "type": "remote",
                 "tag": "apple",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/apple.srs",
-                "download_detour": "Vmess_ws"
+                "download_detour": "Vless_vision"
             },
             {
                 "type": "remote",
                 "tag": "aws",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/aws.srs",
-                "download_detour": "Vmess_ws"
+                "download_detour": "Vless_vision"
             },
             {
                 "type": "remote",
                 "tag": "cnip",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geoip/cn.srs",
-                "download_detour": "Vmess_ws"
+                "download_detour": "Vless_vision"
             },
             {
                 "type": "remote",
                 "tag": "cnsite0",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/cn.srs",
-                "download_detour": "Vmess_ws"
+                "download_detour": "Vless_vision"
             },
             {
                 "type": "remote",
                 "tag": "cnsite1",
                 "format": "binary",
                 "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-cn.srs",
-                "download_detour": "Vmess_ws"
+                "download_detour": "Vless_vision"
             },
             {
                 "type": "remote",
                 "tag": "disney",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/disney.srs",
-                "download_detour": "Vmess_ws"
+                "download_detour": "Vless_vision"
             },
             {
                 "type": "remote",
                 "tag": "facebook",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/facebook.srs",
-                "download_detour": "Vmess_ws"
+                "download_detour": "Vless_vision"
             },
             {
                 "type": "remote",
                 "tag": "google",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/google.srs",
-                "download_detour": "Vmess_ws"
+                "download_detour": "Vless_vision"
             },
             {
                 "type": "remote",
                 "tag": "microsoft",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/microsoft.srs",
-                "download_detour": "Vmess_ws"
+                "download_detour": "Vless_vision"
             },
             {
                 "type": "remote",
                 "tag": "netflix",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/netflix.srs",
-                "download_detour": "Vmess_ws"
+                "download_detour": "Vless_vision"
             },
             {
                 "type": "remote",
                 "tag": "openai",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/openai.srs",
-                "download_detour": "Vmess_ws"
+                "download_detour": "Vless_vision"
             },
             {
                 "type": "remote",
                 "tag": "paypal",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/paypal.srs",
-                "download_detour": "Vmess_ws"
+                "download_detour": "Vless_vision"
             },
             {
                 "type": "remote",
                 "tag": "stripe",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/stripe.srs",
-                "download_detour": "Vmess_ws"
+                "download_detour": "Vless_vision"
             }
         ],
         "auto_detect_interface": true,

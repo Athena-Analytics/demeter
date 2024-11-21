@@ -39,7 +39,7 @@ class RemoteProxyConfig:
         elif self.tool_type == "shadowrocket":
             remote_proxy_config = self.shadowrocket_remote_proxy_config()
         else:
-            raise ValueError("")
+            raise ValueError(f"tool_type must be valid. but got {self.tool_type}")
 
         return remote_proxy_config
 
@@ -50,7 +50,7 @@ class RemoteProxyConfig:
         proxy_key: str,
         proxy_group_key: str,
     ) -> dict:
-        
+
         def _replace_default_for_singbox(o: dict, j: list) -> dict:
             if "default" in o and "JMS" in o["default"]:
                 n = o["default"].split("-")[1]
@@ -107,7 +107,7 @@ class RemoteProxyConfig:
         """
 
         def add_proxy_chain(proxies: list):
-            filter_proxy = list(filter(lambda x: x["tag"] == "Vmess_ws", proxies))
+            filter_proxy = list(filter(lambda x: x["tag"] == "Vless_vision", proxies))
             proxy_chain = filter_proxy[0].copy()
             proxy_chain["tag"] = "Proxy_chain"
             proxy_chain["detour"] = "airport_select"

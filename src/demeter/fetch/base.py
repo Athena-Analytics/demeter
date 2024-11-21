@@ -45,7 +45,7 @@ class BaseRequest:
 
     def get_method(self, *args, **kwargs) -> requests.Response:
         """
-        Get Method
+        Get method
         """
         index = args[0] if args else 0
         params = kwargs["params"] if kwargs else {}
@@ -68,7 +68,7 @@ class BaseRequest:
 
     def post_method(self, *args, **kwargs) -> requests.Response:
         """
-        Post Method
+        Post method
         """
         index = args[0] if args else 0
         payload = kwargs["payload"] if kwargs else {}

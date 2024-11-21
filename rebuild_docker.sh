@@ -1,20 +1,27 @@
 #!/bin/bash
 source .env
 
-sudo docker stop demeter
-echo "stop container demeter"
+image=$(docker inspect --format='{{.Config.Image}}' demeter)
+image_version="${image##*:}"
 
-sudo docker rm demeter
-echo "rm container demeter"
+if [ $image_version = $DEMETER_VERSION ]; then
+    echo "please change version in .env"
+else
+    sudo docker stop demeter
+    echo "stop container demeter"
 
-sudo docker build -t athena/demeter:$DEMETER_VERSION .
-echo "build a new image: athena/demeter:$DEMETE_VERSION"
+    sudo docker rm demeter
+    echo "rm container demeter"
 
-sudo docker volume rm demeter_results
-echo "rm a volume: demeter_results"
+    sudo docker build -t athena/demeter:$DEMETER_VERSION .
+    echo "build a new image: athena/demeter:$DEMETER_VERSION"
 
-sudo docker volume create demeter_results
-echo "create a volume: demeter_results"
+    sudo docker volume rm demeter_results
+    echo "rm a volume: demeter_results"
 
-sudo docker run -d -p 5000:5000 --name demeter --restart unless-stopped -v demeter_results:/app/src/demeter/results athena/demeter:$DEMETER_VERSION
-echo "run a new container: demeter"
+    sudo docker volume create demeter_results
+    echo "create a volume: demeter_results"
+
+    sudo docker run -d -p 5000:5000 --name demeter --restart unless-stopped -v demeter_results:/app/src/demeter/results athena/demeter:$DEMETER_VERSION
+    echo "run a new container: demeter"
+fi
