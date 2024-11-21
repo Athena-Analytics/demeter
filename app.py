@@ -45,7 +45,8 @@ def remote_config(tool_type: str) -> Response:
 
         return response
     except Exception as e:
-        app.logger.error(traceback.print_exc())
+        traceback.print_exc()
+        app.logger.error(e)
         return str(e)
 
 

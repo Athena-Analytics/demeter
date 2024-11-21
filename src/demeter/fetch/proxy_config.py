@@ -125,7 +125,7 @@ class ProxyConfig(BaseRequest):
         if re.search("singbox", tool_type):
             proxy_component.update(
                 {
-                    "tag": proxy_name if proxy_name != "Vmess-ws" else "Vmess_ws",
+                    "tag": proxy_name,
                     "server_port": port,
                     "security": cipher,
                     "alter_id": aid,
