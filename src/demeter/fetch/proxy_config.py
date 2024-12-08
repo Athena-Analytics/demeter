@@ -52,39 +52,32 @@ class ProxyConfig(BaseRequest):
         cipher: str,
     ) -> dict:
 
-        proxy_component = {
-            "server": address,
-            "password": password,
-        }
-
         if tool_type == "clash":
-            proxy_component.update(
-                {
-                    "type": "ss",
-                    "name": proxy_name,
-                    "port": int(port),
-                    "cipher": cipher,
-                    "udp": True,
-                }
-            )
-            return proxy_component
+            return {
+                "name": proxy_name,
+                "type": "ss",
+                "server": address,
+                "port": int(port),
+                "cipher": cipher,
+                "password": password,
+                "udp": True,
+            }
 
         if re.search("singbox", tool_type):
-            proxy_component.update(
-                {
-                    "type": "shadowsocks",
-                    "tag": proxy_name,
-                    "server_port": int(port),
-                    "method": cipher,
-                }
-            )
-            return proxy_component
+            return {
+                "type": "shadowsocks",
+                "tag": proxy_name,
+                "server": address,
+                "server_port": int(port),
+                "method": cipher,
+                "password": password,
+            }
 
     @staticmethod
     def _get_tool_component_by_vmess(
         tool_type: str,
         proxy_name: str,
-        uid: str,
+        uuid: str,
         address: str,
         port: int,
         aid: int,
@@ -94,28 +87,23 @@ class ProxyConfig(BaseRequest):
         **kwargs,
     ) -> dict:
 
-        proxy_component = {
-            "type": "vmess",
-            "server": address,
-            "uuid": uid,
-        }
-
         if tool_type == "clash":
-            proxy_component.update(
-                {
-                    "name": proxy_name,
-                    "port": port,
-                    "alterId": aid,
-                    "cipher": cipher,
-                    "udp": True,
-                    "skip-cert-verify": False,
-                    "network": network,
-                }
-            )
+            proxy_component = {
+                "name": proxy_name,
+                "type": "vmess",
+                "server": address,
+                "port": port,
+                "uuid": uuid,
+                "alterId": aid,
+                "cipher": cipher,
+                "udp": True,
+                "skip-cert-verify": False,
+                "network": network,
+            }
             if tls:
                 proxy_component["tls"] = tls
                 if "sni" in kwargs and kwargs["sni"] != "":
-                    proxy_component["tls"]["server_name"] = kwargs["sni"]
+                    proxy_component["server_name"] = kwargs["sni"]
 
             if network == "ws":
                 proxy_component["ws-opts"] = kwargs["ws_option"]
@@ -123,17 +111,19 @@ class ProxyConfig(BaseRequest):
             return proxy_component
 
         if re.search("singbox", tool_type):
-            proxy_component.update(
-                {
-                    "tag": proxy_name,
-                    "server_port": port,
-                    "security": cipher,
-                    "alter_id": aid,
-                    "global_padding": True,
-                    "network": "tcp",
-                    "packet_encoding": "xudp",
-                }
-            )
+            proxy_component = {
+                "type": "vmess",
+                "tag": proxy_name,
+                "server": address,
+                "server_port": port,
+                "uuid": uuid,
+                "security": cipher,
+                "alter_id": aid,
+                "global_padding": True,
+                "network": "tcp",
+                "packet_encoding": "xudp",
+            }
+
             if tls:
                 proxy_component["tls"] = {
                     "enabled": True,
@@ -146,8 +136,9 @@ class ProxyConfig(BaseRequest):
                     proxy_component["tls"]["server_name"] = kwargs["sni"]
 
             if network == "ws":
-                proxy_component["transport"] = {"type": "ws"}
-                proxy_component["transport"].update(kwargs["ws_option"])
+                transport = {"type": "ws"}
+                transport.update(kwargs["ws_option"])
+                proxy_component["transport"] = transport
 
             return proxy_component
 
