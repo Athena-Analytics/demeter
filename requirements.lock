@@ -25,7 +25,6 @@ colorama==0.4.6
     # via click
     # via tqdm
 dask==2024.9.0
-    # via dask
     # via dask-expr
     # via swifter
 dask-expr==1.1.14
@@ -70,6 +69,8 @@ pyarrow==17.0.0
     # via dask-expr
 python-dateutil==2.9.0.post0
     # via pandas
+python-dotenv==1.0.1
+    # via demeter
 pytz==2024.2
     # via pandas
 pyyaml==6.0.2
