@@ -6,6 +6,7 @@ import logging
 import os
 import traceback
 
+from dotenv import load_dotenv
 from flask import Flask, Response, request
 
 from demeter.remote_proxy_config import RemoteProxyConfig
@@ -51,4 +52,5 @@ def remote_config(tool_type: str) -> Response:
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0")
+    load_dotenv()
+    app.run(host="0.0.0.0", debug=True if os.getenv("FLASK_ENV") == "dev" else False)
