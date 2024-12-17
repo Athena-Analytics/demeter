@@ -26,7 +26,7 @@ class RemoteProxyConfig:
     def __init__(self, tool_type) -> None:
         self.tool_type = tool_type
         self.proxy_config = ProxyConfig(SUB_URL, CUSTOM_LINK)
-        self.cf = CF(R2_URL, ACCESS_KEY, SECRET_KEY)
+        self.cf = CF(ACCESS_KEY, SECRET_KEY)
 
     def get_remote_proxy_config(self):
         """
@@ -88,7 +88,7 @@ class RemoteProxyConfig:
         Get clash remote proxy config
         """
         proxies = self.proxy_config.get_proxies(self.tool_type)
-        clash_file = self.cf.get_file_from_r2(f"{self.tool_type}.yaml")
+        clash_file = self.cf.get_file_from_r2(R2_URL, f"{self.tool_type}.yaml")
 
         clash_configuration_template = yaml.safe_load(clash_file)
         clash_configuration_template["proxies"] = proxies
@@ -115,7 +115,7 @@ class RemoteProxyConfig:
             return proxies
 
         proxies = add_proxy_chain(self.proxy_config.get_proxies(self.tool_type))
-        singbox_file = self.cf.get_file_from_r2(f"{self.tool_type}.json")
+        singbox_file = self.cf.get_file_from_r2(R2_URL, f"{self.tool_type}.json")
 
         singbox_configuration_template = json.loads(singbox_file)
         singbox_configuration_template["outbounds"].extend(proxies)
@@ -132,5 +132,5 @@ class RemoteProxyConfig:
         """
         Get shadow rocket remote proxy config
         """
-        shadowrocket_file = self.cf.get_file_from_r2(f"{self.tool_type}.conf")
+        shadowrocket_file = self.cf.get_file_from_r2(R2_URL, f"{self.tool_type}.conf")
         return shadowrocket_file

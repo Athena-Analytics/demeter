@@ -14,7 +14,8 @@ class ProxyConfig(BaseRequest):
     """
 
     def __init__(self, sub_url: str, custom_link: str):
-        super().__init__(url=decode_base64_str(sub_url))
+        super().__init__()
+        self.sub_url = sub_url
         self.custom_link = custom_link
 
     @staticmethod
@@ -307,8 +308,15 @@ class ProxyConfig(BaseRequest):
         try:
             proxies = []
 
-            r = self.get_method()
-            proxy_links = decode_base64_str(r.text).split("\n")
+            proxy_links = []
+
+            if "," in self.sub_url:
+                for i in self.sub_url.split(","):
+                    r = self.get_method(decode_base64_str(i))
+                    proxy_links.extend(decode_base64_str(r.text).split("\n"))
+            else:
+                r = self.get_method(decode_base64_str(self.sub_url))
+                proxy_links.extend(decode_base64_str(r.text).split("\n"))
 
             if self.custom_link is not None:
                 custom_links_decoded = [
