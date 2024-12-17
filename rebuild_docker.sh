@@ -16,15 +16,9 @@ else
     sudo docker image rm athena/demeter:$CURRENT_DEMETER_VERSION
     echo "rm image athena/demeter:$CURRENT_DEMETER_VERSION"
 
-    sudo docker volume rm demeter_results
-    echo "rm a volume: demeter_results"
-
     sudo docker build -t athena/demeter:$DEMETER_VERSION .
     echo "build a new image: athena/demeter:$DEMETER_VERSION"
 
-    sudo docker volume create demeter_results
-    echo "create a volume: demeter_results"
-
-    sudo docker run -d -p 5000:5000 --name demeter --restart unless-stopped -v demeter_results:/app/src/demeter/results athena/demeter:$DEMETER_VERSION
+    sudo docker run -d -p 5000:5000 --name demeter --restart unless-stopped -v /home/leaf/demeter/src/demeter/config.ini:/root/demeter/src/demeter/config.ini athena/demeter:$DEMETER_VERSION
     echo "run a new container: demeter"
 fi
