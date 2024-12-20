@@ -194,6 +194,10 @@
                 "domain_suffix": [
                     "leafsyang.com"
                 ],
+                "domain_keyword": [
+                    "adjust",
+                    "appsflyer"
+                ],
                 "ip_cidr": [
                     "144.126.145.148/32",
                     "208.54.1.1/16"
@@ -214,8 +218,6 @@
             },
             {
                 "domain_keyword": [
-                    "adjust",
-                    "appsflyer",
                     "ksztone"
                 ],
                 "ip_cidr": [
