@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from flask import Flask, Response, request
 
 from demeter.remote_proxy_config import RemoteProxyConfig
+from demeter.utils import get_config
 
 app = Flask(__name__)
 
@@ -34,7 +35,17 @@ def remote_config(tool_type: str) -> Response:
         }
         app.logger.info(log_data)
 
-        remote_proxy_config = RemoteProxyConfig(tool_type)
+        config = get_config()
+        sub_url = config["Proxy.Link"]["sub_url"]
+        custom_link = config["Proxy.Link"]["custom_link"]
+        r2_url = config["R2.Config-template"]["r2_url"]
+        access_key = config["R2.Config-template"]["access_key"]
+        secret_key = config["R2.Config-template"]["secret_key"]
+        app.logger.info({"sub_url": sub_url, "custom_link": custom_link})
+
+        remote_proxy_config = RemoteProxyConfig(
+            tool_type, sub_url, custom_link, r2_url, access_key, secret_key
+        )
         proxy_config = remote_proxy_config.get_remote_proxy_config()
 
         if tool_type == "singbox":
