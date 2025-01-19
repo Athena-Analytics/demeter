@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from flask import Flask, Response, request
 
 from demeter.remote_proxy_config import RemoteProxyConfig
-from demeter.utils import get_config
+from demeter.utils import encode_base64_str, get_config
 
 app = Flask(__name__)
 
@@ -19,6 +19,58 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s",
 )
+
+
+@app.route("/healthz", methods=["GET"])
+def health_check() -> Response:
+    """
+    Get remote config
+    """
+    try:
+        log_data = {
+            "method": request.method,
+            "path": request.path,
+            "args": request.args,
+            "data": request.data.decode("utf-8"),
+        }
+        app.logger.info(log_data)
+
+        response = Response("healthy")
+
+        return response
+    except Exception as e:
+        traceback.print_exc()
+        app.logger.error(e)
+        return str(e)
+
+
+@app.route("/encode/", methods=["GET"])
+def encode_url() -> Response:
+    """
+    Get remote config
+    """
+    try:
+        log_data = {
+            "method": request.method,
+            "path": request.path,
+            "args": request.args,
+            "data": request.data.decode("utf-8"),
+        }
+        app.logger.info(log_data)
+
+        sub_url = request.args.get("url")
+
+        if sub_url is None:
+            response = Response("Please provide a valid param", status=400)
+        else:
+            result = encode_base64_str(sub_url)
+            response = Response(result, content_type="text/plain; charset=utf-8")
+
+        return response
+    except Exception as e:
+        traceback.print_exc()
+        app.logger.error(e)
+        return str(e)
 
 
 @app.route("/tool_type/<tool_type>", methods=["GET"])

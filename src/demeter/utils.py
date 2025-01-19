@@ -115,6 +115,13 @@ def save_df_result(df: pd.DataFrame, save_type: str, save_params: dict):
         raise
 
 
+def encode_base64_str(s: str) -> str:
+    """
+    Encode base64 of sub link
+    """
+    return base64.b64encode(s.encode("utf-8")).decode("utf-8")
+
+
 def decode_base64_str(base64_str: str) -> str:
     """
     Decode base64 of sub link
