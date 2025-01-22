@@ -183,17 +183,19 @@
                 "outbound": "GLOBAL"
             },
             {
-                "domain_suffix": [
-                    "leafsyang.xyz"
+                "domain": [
+                    "firewoody.tech"
                 ],
                 "outbound": "update_config"
             },
             {
                 "domain_suffix": [
-                    "leafsyang.com"
+                    "firewoody.tech"
                 ],
                 "ip_cidr": [
                     "144.126.145.148/32",
+                    "89.117.19.247/32",
+                    "89.117.20.249/32",
                     "208.54.1.1/16"
                 ],
                 "clash_mode": "rule",
