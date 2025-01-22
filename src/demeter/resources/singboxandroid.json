@@ -20,8 +20,7 @@
                 "address": "https://dns.google/dns-query",
                 "address_resolver": "default-dns",
                 "address_strategy": "ipv4_only",
-                "strategy": "ipv4_only",
-                "client_subnet": "1.1.1.1"
+                "strategy": "ipv4_only"
             }
         ],
         "rules": [
