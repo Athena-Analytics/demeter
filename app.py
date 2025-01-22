@@ -22,7 +22,7 @@ logging.basicConfig(
 )
 
 
-@app.route("/healthz", methods=["GET"])
+@app.route("/health", methods=["GET"])
 def health_check() -> Response:
     """
     Check if server is healthy
