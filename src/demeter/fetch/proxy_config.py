@@ -29,15 +29,8 @@ class ProxyConfig(BaseRequest):
                 proxy_content.split("#")[1],
             )
 
-        if proxy_protocol == "vmess":
+        if proxy_protocol in ["vmess", "vless"]:
             return proxy_protocol, decode_base64_str(proxy_content.split("#")[0]), ""
-
-        if proxy_protocol == "vless":
-            return (
-                proxy_protocol,
-                proxy_content.split("#")[0],
-                proxy_content.split("#")[1],
-            )
 
         raise ValueError(
             f"proxy_protocol must be ss, vmess, vless. but got {proxy_protocol}"
@@ -263,22 +256,23 @@ class ProxyConfig(BaseRequest):
             return proxy_component
 
         if proxy_protocol == "vless":
-            components = proxy_configuration.split("?")
-            uuid, address_port = components[0].split("@")
-            address, port = address_port.split(":")
-            proxy_configuration_dict = urllib.parse.parse_qs(components[1])
-            flow = proxy_configuration_dict["flow"][0]
+            proxy_configuration_dict = literal_eval(proxy_configuration)
+            proxy_name = proxy_configuration_dict["ps"]
+            uid = proxy_configuration_dict["id"]
+            address = proxy_configuration_dict["add"]
+            port = proxy_configuration_dict["port"]
+            flow = proxy_configuration_dict["flow"]
             network = (
-                proxy_configuration_dict["type"][0]
+                proxy_configuration_dict["type"]
                 if "type" in proxy_configuration_dict
                 else "tcp"
             )
             tls = (
                 "security" in proxy_configuration_dict
-                and proxy_configuration_dict["security"][0] == "tls"
+                and proxy_configuration_dict["security"] == "tls"
             )
             sni = (
-                proxy_configuration_dict["sni"][0]
+                proxy_configuration_dict["sni"]
                 if "sni" in proxy_configuration_dict
                 and proxy_configuration_dict["sni"] != ""
                 else ""
@@ -290,7 +284,7 @@ class ProxyConfig(BaseRequest):
             proxy_component = self._get_tool_component_by_vless(
                 tool_type,
                 proxy_name,
-                uuid,
+                uid,
                 address,
                 int(port),
                 flow,
@@ -305,40 +299,35 @@ class ProxyConfig(BaseRequest):
         """
         Get proxies
         """
-        try:
-            proxies = []
+        proxies = []
 
-            proxy_links = []
+        proxy_links = []
 
-            if "," in self.sub_url:
-                for i in self.sub_url.split(","):
-                    r = self.get_method(decode_base64_str(i))
-                    proxy_links.extend(decode_base64_str(r.text).split("\n"))
-            else:
-                r = self.get_method(decode_base64_str(self.sub_url))
+        if "," in self.sub_url:
+            for i in self.sub_url.split(","):
+                r = self.get_method(decode_base64_str(i))
                 proxy_links.extend(decode_base64_str(r.text).split("\n"))
+        else:
+            r = self.get_method(decode_base64_str(self.sub_url))
+            proxy_links.extend(decode_base64_str(r.text).split("\n"))
 
-            if self.custom_link is not None:
-                custom_links_decoded = [
-                    decode_base64_str(i) for i in self.custom_link.split(",")
-                ]
-            else:
-                custom_links_decoded = []
+        if self.custom_link is not None:
+            custom_links_decoded = [
+                decode_base64_str(i) for i in self.custom_link.split(",")
+            ]
+        else:
+            custom_links_decoded = []
 
-            proxy_links.extend(custom_links_decoded)
+        proxy_links.extend(custom_links_decoded)
 
-            for proxy_link in proxy_links:
-                proxy_protocol, proxy_configuration, proxy_name = self._decode_sub_link(
-                    proxy_link
-                )
-                proxy = self.get_proxy_component(
-                    tool_type, proxy_protocol, proxy_configuration, proxy_name
-                )
-                if len(proxy) != 0:
-                    proxies.append(proxy)
+        for proxy_link in proxy_links:
+            proxy_protocol, proxy_configuration, proxy_name = self._decode_sub_link(
+                proxy_link
+            )
+            proxy = self.get_proxy_component(
+                tool_type, proxy_protocol, proxy_configuration, proxy_name
+            )
+            if len(proxy) != 0:
+                proxies.append(proxy)
 
-            return proxies
-
-        except TimeoutError as e:
-            print(e)
-            raise
+        return proxies

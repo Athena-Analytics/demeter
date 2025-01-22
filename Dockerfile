@@ -1,5 +1,5 @@
 # Use a base image
-FROM ubuntu:22.04
+FROM debian:12
 
 RUN apt-get -y update && apt-get -y upgrade && apt-get install -y curl
 

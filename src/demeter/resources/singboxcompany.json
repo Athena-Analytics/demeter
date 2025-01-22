@@ -21,8 +21,7 @@
                 "address": "https://dns.google/dns-query",
                 "address_resolver": "default-dns",
                 "address_strategy": "ipv4_only",
-                "strategy": "ipv4_only",
-                "client_subnet": "1.1.1.1"
+                "strategy": "ipv4_only"
             }
         ],
         "rules": [
@@ -185,21 +184,24 @@
                 "outbound": "GLOBAL"
             },
             {
-                "domain_suffix": [
-                    "leafsyang.xyz"
+                "domain": [
+                    "firewoody.tech"
                 ],
                 "outbound": "update_config"
             },
             {
                 "domain_suffix": [
-                    "leafsyang.com"
+                    "firewoody.tech"
                 ],
                 "domain_keyword": [
                     "adjust",
-                    "appsflyer"
+                    "appsflyer",
+                    "applovin"
                 ],
                 "ip_cidr": [
                     "144.126.145.148/32",
+                    "89.117.19.247/32",
+                    "89.117.20.249/32",
                     "208.54.1.1/16"
                 ],
                 "clash_mode": "rule",
@@ -222,7 +224,8 @@
                 ],
                 "ip_cidr": [
                     "172.27.0.168/32",
-                    "172.22.20.230/32"
+                    "172.22.20.230/32",
+                    "172.22.34.47/32"
                 ],
                 "clash_mode": "rule",
                 "outbound": "direct-out"
