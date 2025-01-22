@@ -4,13 +4,14 @@ Flask App
 
 import logging
 import os
+import re
 import traceback
 
 from dotenv import load_dotenv
 from flask import Flask, Response, request
 
 from demeter.remote_proxy_config import RemoteProxyConfig
-from demeter.utils import encode_base64_str, get_config
+from demeter.utils import decode_base64_str, encode_base64_str, get_config
 
 app = Flask(__name__)
 
@@ -24,8 +25,9 @@ logging.basicConfig(
 @app.route("/healthz", methods=["GET"])
 def health_check() -> Response:
     """
-    Get remote config
+    Check if server is healthy
     """
+    response = None
     try:
         log_data = {
             "method": request.method,
@@ -41,14 +43,16 @@ def health_check() -> Response:
     except Exception as e:
         traceback.print_exc()
         app.logger.error(e)
-        return str(e)
+        response = Response("unhealthy", status=500)
+        return response
 
 
 @app.route("/encode/", methods=["GET"])
-def encode_url() -> Response:
+def encode() -> Response:
     """
-    Get remote config
+    Encode something by base64
     """
+    response = None
     try:
         log_data = {
             "method": request.method,
@@ -58,19 +62,61 @@ def encode_url() -> Response:
         }
         app.logger.info(log_data)
 
-        sub_url = request.args.get("url")
+        s = request.args.get("s")
 
-        if sub_url is None:
-            response = Response("Please provide a valid param", status=400)
-        else:
-            result = encode_base64_str(sub_url)
-            response = Response(result, content_type="text/plain; charset=utf-8")
+        if s is None:
+            raise ValueError("Please provide a valid param")
 
+        result = encode_base64_str(s)
+        response = Response(result, content_type="text/plain; charset=utf-8")
+
+        return response
+    except ValueError as e:
+        traceback.print_exc()
+        app.logger.error(e)
+        response = Response(str(e), status=400)
         return response
     except Exception as e:
         traceback.print_exc()
         app.logger.error(e)
-        return str(e)
+        response = Response(str(e), status=500)
+        return response
+
+
+@app.route("/decode/", methods=["GET"])
+def decode() -> Response:
+    """
+    Decode something by base64
+    """
+    response = None
+    try:
+        log_data = {
+            "method": request.method,
+            "path": request.path,
+            "args": request.args,
+            "data": request.data.decode("utf-8"),
+        }
+        app.logger.info(log_data)
+
+        s = request.args.get("s")
+
+        if s is None:
+            raise ValueError("Please provide a valid param")
+
+        result = decode_base64_str(s)
+        response = Response(result, content_type="text/plain; charset=utf-8")
+
+        return response
+    except ValueError as e:
+        traceback.print_exc()
+        app.logger.error(e)
+        response = Response(str(e), status=400)
+        return response
+    except Exception as e:
+        traceback.print_exc()
+        app.logger.error(e)
+        response = Response(str(e), status=500)
+        return response
 
 
 @app.route("/tool_type/<tool_type>", methods=["GET"])
@@ -78,6 +124,7 @@ def remote_config(tool_type: str) -> Response:
     """
     Get remote config
     """
+    response = None
     try:
         log_data = {
             "method": request.method,
@@ -86,6 +133,13 @@ def remote_config(tool_type: str) -> Response:
             "data": request.data.decode("utf-8"),
         }
         app.logger.info(log_data)
+
+        if re.search("singbox", tool_type):
+            content_type = "application/json; charset=utf-8"
+        elif tool_type in ["clash", "shadowrocket"]:
+            content_type = "text/plain; charset=utf-8"
+        else:
+            raise ValueError("Please provide valid path")
 
         config = get_config()
         sub_url = config["Proxy.Link"]["sub_url"]
@@ -100,18 +154,19 @@ def remote_config(tool_type: str) -> Response:
         )
         proxy_config = remote_proxy_config.get_remote_proxy_config()
 
-        if tool_type == "singbox":
-            content_type = "application/json; charset=utf-8"
-        else:
-            content_type = "text/plain; charset=utf-8"
-
         response = Response(proxy_config, content_type=content_type)
 
+        return response
+    except ValueError as e:
+        traceback.print_exc()
+        app.logger.error(e)
+        response = Response(str(e), status=400)
         return response
     except Exception as e:
         traceback.print_exc()
         app.logger.error(e)
-        return str(e)
+        response = Response(str(e), status=500)
+        return response
 
 
 if __name__ == "__main__":
