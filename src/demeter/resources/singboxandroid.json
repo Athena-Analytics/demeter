@@ -91,6 +91,14 @@
         },
         {
             "type": "urltest",
+            "tag": "update_config",
+            "outbounds": [
+                "Proxy_chain",
+                "Vless_vision"
+            ]
+        },
+        {
+            "type": "urltest",
             "tag": "auto_select",
             "outbounds": [
                 "JMS-s1",
@@ -144,12 +152,19 @@
             "default": "JMS-s801"
         },
         {
-            "type": "urltest",
-            "tag": "update_config",
+            "type": "selector",
+            "tag": "game_select",
             "outbounds": [
+                "direct-out",
                 "Proxy_chain",
-                "Vless_vision"
-            ]
+                "JMS-s1",
+                "JMS-s2",
+                "JMS-s3",
+                "JMS-s4",
+                "JMS-s5",
+                "JMS-s801"
+            ],
+            "default": "direct-out"
         },
         {
             "type": "selector",
@@ -191,6 +206,11 @@
             {
                 "domain_suffix": [
                     "firewoody.tech"
+                ],
+                "domain_keyword": [
+                    "adjust",
+                    "appsflyer",
+                    "applovin"
                 ],
                 "ip_cidr": [
                     "144.126.145.148/32",
@@ -311,6 +331,13 @@
             },
             {
                 "rule_set": [
+                    "steam"
+                ],
+                "clash_mode": "rule",
+                "outbound": "game_select"
+            },
+            {
+                "rule_set": [
                     "cnip"
                 ],
                 "clash_mode": "rule",
@@ -414,6 +441,13 @@
                 "tag": "stripe",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/stripe.srs",
+                "download_detour": "Vless_vision"
+            },
+            {
+                "type": "remote",
+                "tag": "steam",
+                "format": "binary",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/steam.srs",
                 "download_detour": "Vless_vision"
             }
         ],

@@ -234,18 +234,6 @@
                 "outbound": "direct-out"
             },
             {
-                "domain_keyword": [
-                    "ksztone"
-                ],
-                "ip_cidr": [
-                    "172.27.0.168/32",
-                    "172.22.20.230/32",
-                    "172.22.34.47/32"
-                ],
-                "clash_mode": "rule",
-                "outbound": "direct-out"
-            },
-            {
                 "type": "logical",
                 "mode": "and",
                 "rules": [
