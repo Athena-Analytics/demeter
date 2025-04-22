@@ -1,0 +1,219 @@
+{
+    "log": {
+        "disabled": false,
+        "level": "debug",
+        "timestamp": true
+    },
+    "dns": {
+        "servers": [
+            {
+                "tag": "default-dns",
+                "address": "223.5.5.5",
+                "detour": "direct-out"
+            },
+            {
+                "tag": "block-dns",
+                "address": "rcode://name_error"
+            },
+            {
+                "tag": "google_dns",
+                "address": "https://dns.google/dns-query",
+                "address_resolver": "default-dns",
+                "address_strategy": "ipv4_only",
+                "strategy": "ipv4_only"
+            }
+        ],
+        "rules": [
+            {
+                "outbound": [
+                    "any"
+                ],
+                "server": "default-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "server": "default-dns"
+            },
+            {
+                "clash_mode": "global",
+                "server": "google_dns"
+            },
+            {
+                "type": "logical",
+                "mode": "and",
+                "rules": [
+                    {
+                        "rule_set": [
+                            "cnsite0"
+                        ]
+                    },
+                    {
+                        "rule_set": [
+                            "cnsite1"
+                        ]
+                    }
+                ],
+                "server": "default-dns"
+            }
+        ],
+        "strategy": "ipv4_only",
+        "disable_cache": false,
+        "disable_expire": false,
+        "independent_cache": false,
+        "final": "google_dns"
+    },
+    "inbounds": [
+        {
+            "type": "tun",
+            "tag": "tun-in",
+            "interface_name": "singtun0",
+            "address": "172.19.0.1/30",
+            "mtu": 9000,
+            "auto_route": true,
+            "stack": "system",
+            "sniff": true,
+            "sniff_override_destination": false
+        }
+    ],
+    "outbounds": [
+        {
+            "type": "direct",
+            "tag": "direct-out",
+            "routing_mark": 100
+        },
+        {
+            "type": "block",
+            "tag": "block-out"
+        },
+        {
+            "type": "dns",
+            "tag": "dns-out"
+        },
+        {
+            "type": "selector",
+            "tag": "airport_select",
+            "outbounds": [
+                "ss-1"
+            ],
+            "default": "ss-1"
+        },
+        {
+            "type": "selector",
+            "tag": "manual_select",
+            "outbounds": [
+                "direct-out",
+                "ss-1"
+            ],
+            "default": "ss-1"
+        },
+        {
+            "type": "selector",
+            "tag": "GLOBAL",
+            "outbounds": [
+                "direct-out",
+                "ss-1"
+            ],
+            "default": "ss-1"
+        },
+        {
+            "type": "shadowsocks",
+            "tag": "ss-1",
+            "server": "1.1.1.1",
+            "server_port": 1234,
+            "method": "aes-256-gcm",
+            "password": "1234"
+        }
+    ],
+    "route": {
+        "rules": [
+            {
+                "protocol": "dns",
+                "outbound": "dns-out"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct-out"
+            },
+            {
+                "clash_mode": "global",
+                "outbound": "GLOBAL"
+            },
+            {
+                "type": "logical",
+                "mode": "and",
+                "rules": [
+                    {
+                        "clash_mode": "rule"
+                    },
+                    {
+                        "rule_set": [
+                            "cnsite0"
+                        ]
+                    },
+                    {
+                        "rule_set": [
+                            "cnsite1"
+                        ]
+                    }
+                ],
+                "outbound": "direct-out"
+            },
+            {
+                "rule_set": [
+                    "ads"
+                ],
+                "clash_mode": "rule",
+                "outbound": "block-out"
+            },
+            {
+                "rule_set": [
+                    "apple"
+                ],
+                "clash_mode": "rule",
+                "outbound": "ss-1"
+            }
+        ],
+        "rule_set": [
+            {
+                "type": "remote",
+                "tag": "ads",
+                "format": "binary",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-ads-all.srs",
+                "download_detour": "ss-1"
+            },
+            {
+                "type": "remote",
+                "tag": "apple",
+                "format": "binary",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/apple.srs",
+                "download_detour": "ss-1"
+            },
+            {
+                "type": "remote",
+                "tag": "cnsite0",
+                "format": "binary",
+                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/cn.srs",
+                "download_detour": "ss-1"
+            },
+            {
+                "type": "remote",
+                "tag": "cnsite1",
+                "format": "binary",
+                "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-cn.srs",
+                "download_detour": "ss-1"
+            }
+        ],
+        "auto_detect_interface": true,
+        "final": "ss-1"
+    },
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "127.0.0.1:9090",
+            "external_ui_download_detour": "auto_select",
+            "default_mode": "rule"
+        }
+    }
+}
