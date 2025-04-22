@@ -11,7 +11,7 @@ from demeter.fetch.proxy_config import ProxyConfig
 
 class RemoteProxyConfig:
     """
-    Class of get all kinds of remote proxy config
+    Class remote proxy config
     """
 
     def __init__(
@@ -44,13 +44,16 @@ class RemoteProxyConfig:
         proxy_group_key: str,
     ) -> dict:
 
-        def _replace_default_for_singbox(o: dict, j: list) -> dict:
-            if "default" in o and "JMS" in o["default"]:
-                n = o["default"].split("-")[1]
-                o["default"] = list(filter(lambda x: n in x, j))[0]
-            return o
+        def _replace_jms_template(template: str, j: list) -> list:
+            if "JMS" in template:
+                j_number = template.split("-")[1]
+                j_result = list(filter(lambda x: j_number in x, j))
 
-        jms = [c[name_key] for c in temp_config[proxy_key] if "JMS" in c[name_key]]
+                return j_result[0]
+
+            return template
+
+        jms = [p[name_key] for p in temp_config[proxy_key] if "JMS" in p[name_key]]
 
         _new = []
         for group in temp_config[proxy_group_key]:
@@ -63,12 +66,13 @@ class RemoteProxyConfig:
                 "selector",
             ]
             if group["type"] in proxy_type and "JMS" in ",".join(group[proxy_key]):
-                no_jms = list(
-                    filter(lambda x: x if "JMS" not in x else None, group[proxy_key])
-                )
-                no_jms.extend(jms)
-                group[proxy_key] = no_jms
-                group = _replace_default_for_singbox(group, jms)
+
+                group[proxy_key] = [
+                    _replace_jms_template(i, jms) for i in group[proxy_key]
+                ]
+
+            if "default" in group and "JMS" in group["default"]:
+                group["default"] = _replace_jms_template(group["default"], jms)
 
             _new.append(group)
 

@@ -90,82 +90,38 @@
             "tag": "dns-out"
         },
         {
-            "type": "urltest",
-            "tag": "auto_select",
-            "outbounds": [
-                "JMS-s1",
-                "JMS-s2",
-                "JMS-s3",
-                "JMS-s4",
-                "JMS-s5",
-                "JMS-s801"
-            ]
-        },
-        {
             "type": "selector",
             "tag": "airport_select",
             "outbounds": [
-                "JMS-s1",
-                "JMS-s2",
-                "JMS-s3",
-                "JMS-s4",
-                "JMS-s5",
-                "JMS-s801"
+                "ss-1"
             ],
-            "default": "JMS-s4"
+            "default": "ss-1"
         },
         {
             "type": "selector",
             "tag": "manual_select",
             "outbounds": [
                 "direct-out",
-                "Proxy_chain",
-                "Vless_vision",
-                "JMS-s1",
-                "JMS-s2",
-                "JMS-s3",
-                "JMS-s4",
-                "JMS-s5",
-                "JMS-s801"
+                "ss-1"
             ],
-            "default": "Proxy_chain"
-        },
-        {
-            "type": "selector",
-            "tag": "vps_select",
-            "outbounds": [
-                "JMS-s1",
-                "JMS-s2",
-                "JMS-s3",
-                "JMS-s4",
-                "JMS-s5",
-                "JMS-s801"
-            ],
-            "default": "JMS-s801"
-        },
-        {
-            "type": "urltest",
-            "tag": "update_config",
-            "outbounds": [
-                "Proxy_chain",
-                "Vless_vision"
-            ]
+            "default": "ss-1"
         },
         {
             "type": "selector",
             "tag": "GLOBAL",
             "outbounds": [
                 "direct-out",
-                "Proxy_chain",
-                "Vless_vision",
-                "JMS-s1",
-                "JMS-s2",
-                "JMS-s3",
-                "JMS-s4",
-                "JMS-s5",
-                "JMS-s801"
+                "ss-1"
             ],
-            "default": "Proxy_chain"
+            "default": "ss-1"
+        },
+        {
+            "type": "shadowsocks",
+            "tag": "ss-1",
+            "server": "1.1.1.1",
+            "server_port": 1234,
+            "method": "aes-256-gcm",
+            "password": "1234"
         }
     ],
     "route": {
@@ -181,36 +137,6 @@
             {
                 "clash_mode": "global",
                 "outbound": "GLOBAL"
-            },
-            {
-                "domain": [
-                    "firewoody.tech"
-                ],
-                "outbound": "update_config"
-            },
-            {
-                "domain_suffix": [
-                    "firewoody.tech"
-                ],
-                "ip_cidr": [
-                    "144.126.145.148/32",
-                    "89.117.19.247/32",
-                    "89.117.20.249/32",
-                    "208.54.1.1/16"
-                ],
-                "clash_mode": "rule",
-                "outbound": "vps_select"
-            },
-            {
-                "domain_suffix": [
-                    "cedarhill.co"
-                ],
-                "domain_keyword": [
-                    "bochk",
-                    "ieltsonlinetests"
-                ],
-                "clash_mode": "rule",
-                "outbound": "direct-out"
             },
             {
                 "type": "logical",
@@ -244,77 +170,7 @@
                     "apple"
                 ],
                 "clash_mode": "rule",
-                "outbound": "manual_select"
-            },
-            {
-                "rule_set": [
-                    "aws"
-                ],
-                "clash_mode": "rule",
-                "outbound": "manual_select"
-            },
-            {
-                "rule_set": [
-                    "disney"
-                ],
-                "clash_mode": "rule",
-                "outbound": "manual_select"
-            },
-            {
-                "rule_set": [
-                    "facebook"
-                ],
-                "clash_mode": "rule",
-                "outbound": "manual_select"
-            },
-            {
-                "rule_set": [
-                    "google"
-                ],
-                "clash_mode": "rule",
-                "outbound": "manual_select"
-            },
-            {
-                "rule_set": [
-                    "microsoft"
-                ],
-                "clash_mode": "rule",
-                "outbound": "manual_select"
-            },
-            {
-                "rule_set": [
-                    "netflix"
-                ],
-                "clash_mode": "rule",
-                "outbound": "manual_select"
-            },
-            {
-                "rule_set": [
-                    "openai"
-                ],
-                "clash_mode": "rule",
-                "outbound": "manual_select"
-            },
-            {
-                "rule_set": [
-                    "paypal"
-                ],
-                "clash_mode": "rule",
-                "outbound": "manual_select"
-            },
-            {
-                "rule_set": [
-                    "stripe"
-                ],
-                "clash_mode": "rule",
-                "outbound": "manual_select"
-            },
-            {
-                "rule_set": [
-                    "cnip"
-                ],
-                "clash_mode": "rule",
-                "outbound": "direct-out"
+                "outbound": "ss-1"
             }
         ],
         "rule_set": [
@@ -323,102 +179,32 @@
                 "tag": "ads",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/category-ads-all.srs",
-                "download_detour": "Vless_vision"
+                "download_detour": "ss-1"
             },
             {
                 "type": "remote",
                 "tag": "apple",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/apple.srs",
-                "download_detour": "Vless_vision"
-            },
-            {
-                "type": "remote",
-                "tag": "aws",
-                "format": "binary",
-                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/aws.srs",
-                "download_detour": "Vless_vision"
-            },
-            {
-                "type": "remote",
-                "tag": "cnip",
-                "format": "binary",
-                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geoip/cn.srs",
-                "download_detour": "Vless_vision"
+                "download_detour": "ss-1"
             },
             {
                 "type": "remote",
                 "tag": "cnsite0",
                 "format": "binary",
                 "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/cn.srs",
-                "download_detour": "Vless_vision"
+                "download_detour": "ss-1"
             },
             {
                 "type": "remote",
                 "tag": "cnsite1",
                 "format": "binary",
                 "url": "https://github.com/SagerNet/sing-geosite/raw/rule-set/geosite-cn.srs",
-                "download_detour": "Vless_vision"
-            },
-            {
-                "type": "remote",
-                "tag": "disney",
-                "format": "binary",
-                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/disney.srs",
-                "download_detour": "Vless_vision"
-            },
-            {
-                "type": "remote",
-                "tag": "facebook",
-                "format": "binary",
-                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/facebook.srs",
-                "download_detour": "Vless_vision"
-            },
-            {
-                "type": "remote",
-                "tag": "google",
-                "format": "binary",
-                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/google.srs",
-                "download_detour": "Vless_vision"
-            },
-            {
-                "type": "remote",
-                "tag": "microsoft",
-                "format": "binary",
-                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/microsoft.srs",
-                "download_detour": "Vless_vision"
-            },
-            {
-                "type": "remote",
-                "tag": "netflix",
-                "format": "binary",
-                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/netflix.srs",
-                "download_detour": "Vless_vision"
-            },
-            {
-                "type": "remote",
-                "tag": "openai",
-                "format": "binary",
-                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/openai.srs",
-                "download_detour": "Vless_vision"
-            },
-            {
-                "type": "remote",
-                "tag": "paypal",
-                "format": "binary",
-                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/paypal.srs",
-                "download_detour": "Vless_vision"
-            },
-            {
-                "type": "remote",
-                "tag": "stripe",
-                "format": "binary",
-                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/stripe.srs",
-                "download_detour": "Vless_vision"
+                "download_detour": "ss-1"
             }
         ],
         "auto_detect_interface": true,
-        "final": "manual_select"
+        "final": "ss-1"
     },
     "experimental": {
         "cache_file": {

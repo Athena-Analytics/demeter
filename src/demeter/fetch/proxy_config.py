@@ -1,7 +1,6 @@
 """Proxy config base method"""
 
 import re
-import urllib.parse
 from ast import literal_eval
 
 from demeter.fetch.base import BaseRequest
@@ -10,7 +9,7 @@ from demeter.utils import decode_base64_str
 
 class ProxyConfig(BaseRequest):
     """
-    Class of transfer all proxies to dict
+    Class proxy config
     """
 
     def __init__(self, sub_url: str, custom_link: str):

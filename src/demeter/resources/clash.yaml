@@ -13,283 +13,56 @@ dns:
   fake-ip-filter:
     - +.msftconnecttest.com
     - +.msftncsi.com
-    - +.3gppnetwork.org
   nameserver:
     - 192.168.100.1
     - 192.168.0.1
     - 192.168.1.1
 proxies:
   - type: ss
-    name: test-ss
+    name: ss-1
     server: 1.1.1.1
     port: 1234
-    cipher: chacha20-ietf-poly1305
+    cipher: aes-256-gcm
     password: 1234
     udp: true
-  - name: test-vmess
-    type: vmess
-    server: 2.2.2.2
-    port: 443
-    uuid: 1-2-3-4-5
-    alterId: 0
-    cipher: auto
-    udp: true
-    tls: true
-    skip-cert-verify: false
-    servername: example.com
-    network: ws
-    ws-opts:
-      path: /path
 proxy-groups:
   - name: 💫-Chain
     type: relay
     proxies:
       - 🚀-Airport
-      - Vmess-ws
-  - name: ⏳-Update
-    type: fallback
-    proxies:
-      - 💫-Chain
-      - Vmess-ws
-    url: 'http://www.gstatic.com/generate_204'
-    interval: 300
-  - name: 😈-Maunal
+      - ss-1
+  - name: 😈-Manual
     type: select
     proxies:
       - 💫-Chain
-      - Vmess-ws
-      - JMS-1989@c83s1.jjcruises.com:0604
-      - JMS-1989@c83s2.jjcruises.com:0604
-      - JMS-1989@c83s3.jjcruises.com:0604
-      - JMS-1989@c83s4.jjcruises.com:0604
-      - JMS-1989@c83s5.jjcruises.com:0604
-      - JMS-1989@c83s801.jjcruises.com:0604
+      - ss-1
   - name: 🚀-Airport
     type: select
     proxies:
-      - Vmess-ws
-      - JMS-1989@c83s1.jjcruises.com:0604
-      - JMS-1989@c83s2.jjcruises.com:0604
-      - JMS-1989@c83s3.jjcruises.com:0604
-      - JMS-1989@c83s4.jjcruises.com:0604
-      - JMS-1989@c83s5.jjcruises.com:0604
-      - JMS-1989@c83s801.jjcruises.com:0604
-  - name: ♻️-Auto
-    type: url-test
-    proxies:
-      - JMS-1989@c83s1.jjcruises.com:0604
-      - JMS-1989@c83s2.jjcruises.com:0604
-      - JMS-1989@c83s3.jjcruises.com:0604
-      - JMS-1989@c83s4.jjcruises.com:0604
-      - JMS-1989@c83s5.jjcruises.com:0604
-      - JMS-1989@c83s801.jjcruises.com:0604
-    url: http://www.gstatic.com/generate_204
-    interval: 300
-  - name: 🛒-Aws
-    type: select
-    proxies:
-      - 😈-Maunal
-      - DIRECT
-      - JMS-1989@c83s1.jjcruises.com:0604
-      - JMS-1989@c83s2.jjcruises.com:0604
-      - JMS-1989@c83s3.jjcruises.com:0604
-      - JMS-1989@c83s4.jjcruises.com:0604
-      - JMS-1989@c83s5.jjcruises.com:0604
-      - JMS-1989@c83s801.jjcruises.com:0604
-  - name: Ⓜ️-Microsoft
-    type: select
-    proxies:
-      - 😈-Maunal
-      - DIRECT
-      - JMS-1989@c83s1.jjcruises.com:0604
-      - JMS-1989@c83s2.jjcruises.com:0604
-      - JMS-1989@c83s3.jjcruises.com:0604
-      - JMS-1989@c83s4.jjcruises.com:0604
-      - JMS-1989@c83s5.jjcruises.com:0604
-      - JMS-1989@c83s801.jjcruises.com:0604
-  - name: 🍎-Apple
-    type: select
-    proxies:
-      - 😈-Maunal
-      - DIRECT
-      - JMS-1989@c83s1.jjcruises.com:0604
-      - JMS-1989@c83s2.jjcruises.com:0604
-      - JMS-1989@c83s3.jjcruises.com:0604
-      - JMS-1989@c83s4.jjcruises.com:0604
-      - JMS-1989@c83s5.jjcruises.com:0604
-      - JMS-1989@c83s801.jjcruises.com:0604
-  - name: 📘-Facebook
-    type: select
-    proxies:
-      - 😈-Maunal
-      - JMS-1989@c83s1.jjcruises.com:0604
-      - JMS-1989@c83s2.jjcruises.com:0604
-      - JMS-1989@c83s3.jjcruises.com:0604
-      - JMS-1989@c83s4.jjcruises.com:0604
-      - JMS-1989@c83s5.jjcruises.com:0604
-      - JMS-1989@c83s801.jjcruises.com:0604
-  - name: 🔎-Google
-    type: select
-    proxies:
-      - 😈-Maunal
-      - JMS-1989@c83s1.jjcruises.com:0604
-      - JMS-1989@c83s2.jjcruises.com:0604
-      - JMS-1989@c83s3.jjcruises.com:0604
-      - JMS-1989@c83s4.jjcruises.com:0604
-      - JMS-1989@c83s5.jjcruises.com:0604
-      - JMS-1989@c83s801.jjcruises.com:0604
-  - name: 📺-Multimedia
-    type: select
-    proxies:
-      - 💫-Chain
-      - Vmess-ws
-      - JMS-1989@c83s1.jjcruises.com:0604
-      - JMS-1989@c83s2.jjcruises.com:0604
-      - JMS-1989@c83s3.jjcruises.com:0604
-      - JMS-1989@c83s4.jjcruises.com:0604
-      - JMS-1989@c83s5.jjcruises.com:0604
-      - JMS-1989@c83s801.jjcruises.com:0604
-  - name: 🤖-Openai
-    type: select
-    proxies:
-      - 💫-Chain
-      - Vmess-ws
-      - JMS-1989@c83s1.jjcruises.com:0604
-      - JMS-1989@c83s2.jjcruises.com:0604
-      - JMS-1989@c83s3.jjcruises.com:0604
-      - JMS-1989@c83s4.jjcruises.com:0604
-      - JMS-1989@c83s5.jjcruises.com:0604
-      - JMS-1989@c83s801.jjcruises.com:0604
-  - name: 👻-Ghost
-    type: select
-    proxies:
-      - 😈-Maunal
-      - Vmess-ws
-      - JMS-1989@c83s1.jjcruises.com:0604
-      - JMS-1989@c83s2.jjcruises.com:0604
-      - JMS-1989@c83s3.jjcruises.com:0604
-      - JMS-1989@c83s4.jjcruises.com:0604
-      - JMS-1989@c83s5.jjcruises.com:0604
-      - JMS-1989@c83s801.jjcruises.com:0604
+      - ss-1
   - name: 🐟-Final
     type: select
     proxies:
-      - 😈-Maunal
+      - 😈-Manual
       - DIRECT
-      - JMS-1989@c83s1.jjcruises.com:0604
-      - JMS-1989@c83s2.jjcruises.com:0604
-      - JMS-1989@c83s3.jjcruises.com:0604
-      - JMS-1989@c83s4.jjcruises.com:0604
-      - JMS-1989@c83s5.jjcruises.com:0604
-      - JMS-1989@c83s801.jjcruises.com:0604
+      - ss-1
 rule-providers:
   ads:
     behavior: domain
     interval: 86400
     path: ./rule_provider/ads.yaml
     type: http
-    url: https://rule-providers.leafsyang.com/ads?type=clash
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/category-ads-all.yaml
   apple:
     behavior: domain
     interval: 86400
     path: ./rule_provider/apple.yaml
     type: http
-    url: https://rule-providers.leafsyang.com/apple?type=clash
-  aws:
-    behavior: domain
-    interval: 86400
-    path: ./rule_provider/aws.yaml
-    type: http
-    url: https://rule-providers.leafsyang.com/aws?type=clash
-  cnip:
-    behavior: ipcidr
-    interval: 86400
-    path: ./rule_provider/cnip.yaml
-    type: http
-    url: https://rule-providers.leafsyang.com/cnip?type=clash
-  cnsite:
-    behavior: domain
-    interval: 86400
-    path: ./rule_provider/cnsite.yaml
-    type: http
-    url: https://rule-providers.leafsyang.com/cnsite?type=clash
-  disney:
-    behavior: domain
-    interval: 86400
-    path: ./rule_provider/disney.yaml
-    type: http
-    url: https://rule-providers.leafsyang.com/disney?type=clash
-  facebook:
-    behavior: domain
-    interval: 86400
-    path: ./rule_provider/facebook.yaml
-    type: http
-    url: https://rule-providers.leafsyang.com/facebook?type=clash
-  google:
-    behavior: domain
-    interval: 86400
-    path: ./rule_provider/google.yaml
-    type: http
-    url: https://rule-providers.leafsyang.com/google?type=clash
-  microsoft:
-    behavior: domain
-    interval: 86400
-    path: ./rule_provider/microsoft.yaml
-    type: http
-    url: https://rule-providers.leafsyang.com/microsoft?type=clash
-  netflix:
-    behavior: domain
-    interval: 86400
-    path: ./rule_provider/netflix.yaml
-    type: http
-    url: https://rule-providers.leafsyang.com/netflix?type=clash
-  openai:
-    behavior: domain
-    interval: 86400
-    path: ./rule_provider/openai.yaml
-    type: http
-    url: https://rule-providers.leafsyang.com/openai?type=clash
-  paypal:
-    behavior: domain
-    interval: 86400
-    path: ./rule_provider/paypal.yaml
-    type: http
-    url: https://rule-providers.leafsyang.com/paypal?type=clash
-  stripe:
-    behavior: domain
-    interval: 86400
-    path: ./rule_provider/stripe.yaml
-    type: http
-    url: https://rule-providers.leafsyang.com/stripe?type=clash
-  company:
-    behavior: classical
-    interval: 86400
-    path: ./rule_provider/company.yaml
-    type: http
-    url: https://rule-providers.leafsyang.com/company?type=clash
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/refs/heads/meta/geo/geosite/apple.yaml
 rules:
   - DOMAIN,clash.razord.top,DIRECT
   - DOMAIN,yacd.haishan.me,DIRECT
-  - IP-CIDR,144.126.145.148/32,👻-Ghost,no-resolve
-  - DOMAIN-SUFFIX,leafsyang.com,👻-Ghost
-  - DOMAIN-SUFFIX,leafsyang.xyz,⏳-Update
-  - DOMAIN-SUFFIX,cedarhill.co,DIRECT
-  - DOMAIN-KEYWORD,3gppnetwork,👻-Ghost
-  - DOMAIN-KEYWORD,openairinfo,👻-Ghost
-  - DOMAIN-KEYWORD,ieltsonlinetests,DIRECT
-  - DOMAIN-KEYWORD,bochk,DIRECT
   - GEOIP,LAN,DIRECT,no-resolve
   - RULE-SET,ads,REJECT
-  - RULE-SET,cnsite,DIRECT
-  - RULE-SET,company,DIRECT
-  - RULE-SET,aws,🛒-Aws
   - RULE-SET,apple,🍎-Apple
-  - RULE-SET,disney,📺-Multimedia
-  - RULE-SET,facebook,📘-Facebook
-  - RULE-SET,google,🔎-Google
-  - RULE-SET,microsoft,Ⓜ️-Microsoft
-  - RULE-SET,netflix,📺-Multimedia
-  - RULE-SET,openai,🤖-Openai
-  - RULE-SET,paypal,🤖-Openai
-  - RULE-SET,stripe,🤖-Openai
   - MATCH,🐟-Final

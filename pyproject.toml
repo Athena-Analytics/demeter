@@ -1,6 +1,6 @@
 [project]
 name = "demeter"
-version = "0.1.11"
+version = "0.2.0"
 description = "Handle all http request"
 authors = [
     { name = "windows@home", email = "programlfyh@proton.me" }
@@ -13,6 +13,7 @@ dependencies = [
     "openpyxl==3.1.2",
     "flask>=3.0.3",
     "python-dotenv>=1.0.1",
+    "lxml>=5.3.1",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
