@@ -1,6 +1,7 @@
 """Request base method"""
 
 from typing import Callable
+from urllib.parse import urlparse
 
 import pandas as pd
 import requests
@@ -33,11 +34,12 @@ class BaseRequest:
         """
         Get method
         """
+        path = urlparse(url).path.strip("/")
         index = args[0] if args else 0
-        params = kwargs["params"] if kwargs else {}
+        params = kwargs["params"] if kwargs else None
 
         try:
-            print(f"start processing {index}-{params} data")
+            print(f"start processing {index}-{path}-{params} data")
 
             r = self._session.get(
                 url=url,
@@ -46,7 +48,7 @@ class BaseRequest:
                 cookies=self._cookies,
             )
 
-            print(f"end processing {index}-{params} data")
+            print(f"end processing {index}-{path}-{params} data")
             return r
         except Exception as e:
             print(e)
@@ -56,11 +58,12 @@ class BaseRequest:
         """
         Post method
         """
+        path = urlparse(url).path.strip("/")
         index = args[0] if args else 0
-        payload = kwargs["payload"] if kwargs else {}
+        payload = kwargs["payload"] if kwargs else None
 
         try:
-            print(f"start processing {index}-{payload} data")
+            print(f"start processing {index}-{path}-{payload} data")
 
             r = self._session.post(
                 url=url,
@@ -69,13 +72,13 @@ class BaseRequest:
                 cookies=self._cookies,
             )
 
-            print(f"end processing {index}-{payload} data")
+            print(f"end processing {index}-{path}-{payload} data")
             return r
         except Exception as e:
             print(e)
             raise
 
-    def get_df_from_reponse(
+    def get_df_from_response(
         self, process_func: Callable, r: requests.Response, data: dict
     ) -> pd.DataFrame:
         """

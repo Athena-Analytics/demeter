@@ -11,7 +11,7 @@ from demeter.fetch.proxy_config import ProxyConfig
 
 class RemoteProxyConfig:
     """
-    Class of get all kinds of remote proxy config
+    Class remote proxy config
     """
 
     def __init__(
