@@ -1,5 +1,6 @@
 """Mailbox base method"""
 
+import pandas as pd
 from lxml import html
 
 from demeter.fetch.base import BaseRequest
@@ -80,3 +81,55 @@ class AnytimeMailbox(BaseRequest):
             "functions": functions,
             "carriers": carriers,
         }
+
+
+class IPostalMailbox(BaseRequest):
+    """
+    Class IPostal Mailbox
+    """
+
+    def parse_ipostal_mailbox_list(self, df: pd.DataFrame) -> dict:
+        """
+        Parse iPostal mailbox list
+
+        Args:
+            df: DataFrame containing mailbox list, https://ipostal1.com/locations_ajax.php?action=get_mail_centers&state=AK&city=&country_id=223
+
+        Returns:
+            Dictionary containing parsed mailbox details
+        """
+
+        display = df["display"].values[0]
+        tree = html.fromstring(display)
+
+        # Extract specific elements
+        store_id = [
+            dict(item.attrib)["store-id"]
+            for item in tree.xpath("//article[@class='mail-center-card']")
+        ]
+        store_address = [
+            dict(item.attrib)["store-tooltip"]
+            for item in tree.xpath("//article[@class='mail-center-card']")
+        ]
+        shipping_status = [
+            item.text_content().strip()
+            for item in tree.xpath("//div[contains(@class, 'shipping-status')]")
+        ]
+        store_plan_desktop = [
+            item.text_content().strip()
+            for item in tree.xpath("//p[contains(@class, 'store-plan-desktop')]")
+        ]
+        store_plan_mobile = [
+            item.text_content().strip()
+            for item in tree.xpath("//p[contains(@class, 'store-plan-mobile')]")
+        ]
+
+        result = {
+            "store_id": store_id,
+            "store_address": store_address,
+            "shipping_status": shipping_status,
+            "store_plan_desktop": store_plan_desktop,
+            "store_plan_mobile": store_plan_mobile,
+        }
+
+        return result

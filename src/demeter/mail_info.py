@@ -2,8 +2,8 @@
 
 import pandas as pd
 
-from demeter.fetch.mailbox import AnytimeMailbox
-from demeter.utils import get_config, save_df_result
+from demeter.fetch.mailbox import AnytimeMailbox, IPostalMailbox
+from demeter.utils import get_config, get_object_path, save_df_result
 
 
 def get_anytime_mail_list(country: str, state: str) -> pd.DataFrame:
@@ -86,6 +86,34 @@ def anytime_mail_result(country: str, state: str) -> pd.DataFrame | None:
         raise
 
 
+def get_ipostal_mail_list(
+    country: str = "usa", state: str = "washington"
+) -> pd.DataFrame:
+    """
+    Get ipostal mail result
+    """
+    try:
+        df = pd.read_json(
+            get_object_path("file", f"ipostal_mail_{country}_{state}.json", "results")
+        )
+
+        mailbox_list = IPostalMailbox()
+        ipostal_mailbox_list = mailbox_list.parse_ipostal_mailbox_list(df)
+
+        # Create DataFrame with extracted data
+        result_df = pd.DataFrame(ipostal_mailbox_list)
+
+        result_df[["shipping_status_within_usa", "shipping_status_outside_usa"]] = (
+            result_df["shipping_status"].str.split(r"\n\s+", expand=True, regex=True)
+        )
+
+        return result_df
+
+    except Exception as e:
+        print(f"Error: {e}")
+        raise
+
+
 def main(mail_provider: str):
     """
     Main entrance
@@ -97,6 +125,9 @@ def main(mail_provider: str):
     if mail_provider == "anytime":
         states = config["MailBox"]["anytime_state"]
         func = anytime_mail_result
+    elif mail_provider == "ipostal":
+        states = config["MailBox"]["ipostal_state"]
+        func = get_ipostal_mail_list
     elif mail_provider == "test":
         states = "alaska"
         func = anytime_mail_result
@@ -108,3 +139,8 @@ def main(mail_provider: str):
             save_type="csv",
             save_params={"table_name": f"{mail_provider}_mail_info_{state}.csv"},
         )
+
+
+if __name__ == "__main__":
+    main(mail_provider="ipostal")
+    # get_ipostal_mail_list()
