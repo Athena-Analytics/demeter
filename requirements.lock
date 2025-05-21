@@ -21,9 +21,6 @@ click==8.1.7
     # via flask
 cloudpickle==3.0.0
     # via dask
-colorama==0.4.6
-    # via click
-    # via tqdm
 dask==2024.9.0
     # via dask-expr
     # via swifter
@@ -35,8 +32,6 @@ flask==3.0.3
     # via demeter
 fsspec==2024.9.0
     # via dask
-greenlet==3.1.0
-    # via sqlalchemy
 idna==3.10
     # via requests
 itsdangerous==2.2.0

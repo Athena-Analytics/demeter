@@ -34,25 +34,26 @@ def update_config(
     return "success"
 
 
-def get_resource(
-    resource_type: str = "file",
+def get_object_path(
+    path_type: str,
     file_name: str | None = None,
-    sub_path: str | None = None,
     dir_name: str = "resources",
+    sub_dir: str | None = None,
 ) -> str:
     """
-    Get resource path
+    Get path of objects
     """
-    if resource_type == "file":
-        return f"{working_dir}/{dir_name}/{file_name}"
-    elif resource_type == "sub":
-        return f"{working_dir}/{dir_name}/{sub_path}"
-    elif resource_type == "sub_and_file":
-        return f"{working_dir}/{dir_name}/{sub_path}/{file_name}"
+    if sub_dir is not None:
+        new_dir = f"{dir_name}/{sub_dir}"
     else:
-        raise ValueError(
-            f"resource_type must be file, sub, sub_and_file. but got {resource_type}"
-        )
+        new_dir = dir_name
+
+    if path_type == "dir":
+        return f"{working_dir}/{new_dir}"
+    if path_type == "file":
+        return f"{working_dir}/{new_dir}/{file_name}"
+
+    raise ValueError(f"path_type must be file or dir. but got {path_type}")
 
 
 def save_df_result(df: pd.DataFrame, save_type: str, save_params: dict):
