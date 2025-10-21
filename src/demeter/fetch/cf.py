@@ -1,11 +1,11 @@
-"""Cloudflare base method"""
+"""Fetch files from Cloudflare"""
 
 from demeter.fetch.base import BaseRequest
 
 
 class CF(BaseRequest):
     """
-    Class cf
+    Class to handle fetching files from Cloudflare R2 storage
     """
 
     def __init__(
@@ -21,7 +21,12 @@ class CF(BaseRequest):
 
     def get_file_from_r2(self, file_name: str) -> bytes:
         """
-        Get template of proxy tool
+        Get template of proxy from Cloudflare R2 storage
+
+        Args:
+            file_name (str): Name of the file to fetch from R2 storage
+        Returns:
+            bytes: Content of the file
         """
 
         r = self.get_method(url=self.url, params={"file_name": file_name})

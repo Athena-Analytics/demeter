@@ -1,4 +1,4 @@
-"""Proxy config base method"""
+"""Fetch and parse proxy configurations from a subscription URL or a custom links"""
 
 import re
 from ast import literal_eval
@@ -9,7 +9,7 @@ from demeter.utils import decode_base64_str
 
 class ProxyConfig(BaseRequest):
     """
-    Class proxy config
+    Class to handle fetching and parsing proxy configurations from a subscription URL
     """
 
     def __init__(self, sub_url: str, custom_link: str):
@@ -18,7 +18,7 @@ class ProxyConfig(BaseRequest):
         self.custom_link = custom_link
 
     @staticmethod
-    def _decode_sub_link(proxy_link: str) -> tuple[str, str, str]:
+    def _decode_proxy_link(proxy_link: str) -> tuple[str, str, str]:
         proxy_protocol, proxy_content = proxy_link.split("://")
 
         if proxy_protocol == "ss":
@@ -188,7 +188,15 @@ class ProxyConfig(BaseRequest):
         proxy_name: str,
     ) -> dict:
         """
-        Get proxy component
+        Get proxy component based on the protocol and configuration
+
+        Args:
+            tool_type (str): Type of the tool (e.g., clash, singbox)
+            proxy_protocol (str): Protocol of the proxy (e.g., ss, vmess, vless)
+            proxy_configuration (str): Configuration string for the proxy
+            proxy_name (str): Name of the proxy
+        Returns:
+            dict: Proxy component configuration
         """
 
         if proxy_protocol == "ss":
@@ -296,31 +304,35 @@ class ProxyConfig(BaseRequest):
 
     def get_proxies(self, tool_type: str) -> list:
         """
-        Get proxies
+        Fetch and parse proxy configurations from the subscription URL and custom links
+
+        Args:
+            tool_type (str): Type of the tool (e.g., clash, sing-box)
+        Returns:
+            list: List of proxy configurations
         """
         proxies = []
 
-        proxy_links = []
+        _proxy_links = []
 
-        if "," in self.sub_url:
-            for i in self.sub_url.split(","):
-                r = self.get_method(decode_base64_str(i))
-                proxy_links.extend(decode_base64_str(r.text).split("\n"))
-        else:
-            r = self.get_method(decode_base64_str(self.sub_url))
-            proxy_links.extend(decode_base64_str(r.text).split("\n"))
+        if self.sub_url is not None:
+            _proxy_links.extend(
+                [
+                    self.get_method(decode_base64_str(i)).text
+                    for i in self.sub_url.split(",")
+                ]
+            )
 
         if self.custom_link is not None:
-            custom_links_decoded = [
-                decode_base64_str(i) for i in self.custom_link.split(",")
-            ]
-        else:
-            custom_links_decoded = []
+            _proxy_links.extend(self.custom_link.split(","))
 
-        proxy_links.extend(custom_links_decoded)
+        proxy_links = []
+
+        for i in _proxy_links:
+            proxy_links.extend(decode_base64_str(i).split("\n"))
 
         for proxy_link in proxy_links:
-            proxy_protocol, proxy_configuration, proxy_name = self._decode_sub_link(
+            proxy_protocol, proxy_configuration, proxy_name = self._decode_proxy_link(
                 proxy_link
             )
             proxy = self.get_proxy_component(

@@ -47,7 +47,7 @@ def health_check() -> Response:
         return response
 
 
-@app.route("/encode/", methods=["GET"])
+@app.route("/encode", methods=["GET"])
 def encode() -> Response:
     """
     Encode something by base64
@@ -83,7 +83,7 @@ def encode() -> Response:
         return response
 
 
-@app.route("/decode/", methods=["GET"])
+@app.route("/decode", methods=["GET"])
 def decode() -> Response:
     """
     Decode something by base64
@@ -171,4 +171,8 @@ def remote_config(tool_type: str) -> Response:
 
 if __name__ == "__main__":
     load_dotenv()
-    app.run(host="0.0.0.0", debug=True if os.getenv("FLASK_ENV") == "dev" else False)
+    app.run(
+        host="0.0.0.0",
+        port=5555,
+        debug=True if os.getenv("FLASK_ENV") == "dev" else False,
+    )

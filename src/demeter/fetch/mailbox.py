@@ -1,4 +1,4 @@
-"""Mailbox base method"""
+"""Fetch mailbox information from various providers"""
 
 import pandas as pd
 from lxml import html
@@ -8,19 +8,18 @@ from demeter.fetch.base import BaseRequest
 
 class AnytimeMailbox(BaseRequest):
     """
-    Class Anytime Mailbox
+    Class to handle fetching mailbox information from Anytime Mailbox
     """
 
     def get_anytime_mailbox_list(
-        self, country: str = "usa", state: str = "california"
+        self, country: str = "usa", state: str = "oregon"
     ) -> list:
         """
         Fetch mailbox list from Anytime Mailbox
 
         Args:
             country: Country code (default 'usa')
-            state: State code (default 'california')
-
+            state: State code (default 'oregon')
         Returns:
             List of dictionaries containing mailbox information
         """
@@ -53,7 +52,6 @@ class AnytimeMailbox(BaseRequest):
 
         Args:
             detail_domain: URL of the mailbox detail page
-
         Returns:
             Dictionary containing mailbox details
         """
@@ -85,16 +83,15 @@ class AnytimeMailbox(BaseRequest):
 
 class IPostalMailbox(BaseRequest):
     """
-    Class IPostal Mailbox
+    Class to handle fetching mailbox information from iPostal1
     """
 
     def parse_ipostal_mailbox_list(self, df: pd.DataFrame) -> dict:
         """
-        Parse iPostal mailbox list
+        Parse mailbox list from iPostal1 DataFrame
 
         Args:
-            df: DataFrame containing mailbox list, https://ipostal1.com/locations_ajax.php?action=get_mail_centers&state=AK&city=&country_id=223
-
+            df: DataFrame containing mailbox list (e.g., https://ipostal1.com/locations_ajax.php?action=get_mail_centers&state=AK&city=&country_id=223)
         Returns:
             Dictionary containing parsed mailbox details
         """

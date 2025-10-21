@@ -1,7 +1,10 @@
-# custom files
+# Custom files
 config.ini
 log/
 results/
+
+# Vscode
+.vscode/
 
 # General
 .DS_Store
