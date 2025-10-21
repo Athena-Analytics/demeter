@@ -34,6 +34,8 @@ fsspec==2024.9.0
     # via dask
 idna==3.10
     # via requests
+iniconfig==2.1.0
+    # via pytest
 itsdangerous==2.2.0
     # via flask
 jinja2==3.1.4
@@ -53,6 +55,7 @@ openpyxl==3.1.2
     # via demeter
 packaging==24.1
     # via dask
+    # via pytest
 pandas==2.2.2
     # via dask
     # via dask-expr
@@ -60,10 +63,14 @@ pandas==2.2.2
     # via swifter
 partd==1.4.2
     # via dask
+pluggy==1.6.0
+    # via pytest
 psutil==6.0.0
     # via swifter
 pyarrow==17.0.0
     # via dask-expr
+pytest==8.3.5
+    # via demeter
 python-dateutil==2.9.0.post0
     # via pandas
 python-dotenv==1.0.1

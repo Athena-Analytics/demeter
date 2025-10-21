@@ -1,4 +1,4 @@
-"""Remote proxy config method"""
+"""Remote proxy configuration fetching and handling module"""
 
 import json
 import re
@@ -11,7 +11,7 @@ from demeter.fetch.proxy_config import ProxyConfig
 
 class RemoteProxyConfig:
     """
-    Class remote proxy config
+    Class to handle remote proxy configurations for various tools
     """
 
     def __init__(
@@ -21,9 +21,14 @@ class RemoteProxyConfig:
         self.proxy_config = ProxyConfig(sub_url, custom_link)
         self.cf = CF(r2_url, access_key, secret_key)
 
-    def get_remote_proxy_config(self):
+    def get_remote_proxy_config(self) -> str | bytes:
         """
-        Get remote proxy config
+        Get remote proxy configuration based on the tool type
+
+        Returns:
+            str | bytes: Remote proxy configuration in the format required by the tool
+        Raises:
+            ValueError: If the tool_type is not valid
         """
         if self.tool_type == "clash":
             remote_proxy_config = self.clash_remote_proxy_config()
@@ -44,14 +49,20 @@ class RemoteProxyConfig:
         proxy_group_key: str,
     ) -> dict:
 
-        def _replace_jms_template(template: str, j: list) -> list:
-            if "JMS" in template:
-                j_number = template.split("-")[1]
-                j_result = list(filter(lambda x: j_number in x, j))
+        def _replace_jms_template(template: list, j: list) -> list:
+            j_result = []
 
-                return j_result[0]
+            if "JMS" not in ",".join(template):
+                return template
 
-            return template
+            for item in template:
+                if "JMS" in item:
+                    j_number = item.split("-")[1]
+                    j_result.extend([x for x in j if j_number in x])
+                else:
+                    j_result.append(item)
+
+            return j_result
 
         jms = [p[name_key] for p in temp_config[proxy_key] if "JMS" in p[name_key]]
 
@@ -67,9 +78,7 @@ class RemoteProxyConfig:
             ]
             if group["type"] in proxy_type and "JMS" in ",".join(group[proxy_key]):
 
-                group[proxy_key] = [
-                    _replace_jms_template(i, jms) for i in group[proxy_key]
-                ]
+                group[proxy_key] = _replace_jms_template(group[proxy_key], jms)
 
             if "default" in group and "JMS" in group["default"]:
                 group["default"] = _replace_jms_template(group["default"], jms)
@@ -80,9 +89,12 @@ class RemoteProxyConfig:
 
         return temp_config
 
-    def clash_remote_proxy_config(self):
+    def clash_remote_proxy_config(self) -> str:
         """
         Get clash remote proxy config
+
+        Returns:
+            str: YAML formatted clash configuration with proxies
         """
         proxies = self.proxy_config.get_proxies(self.tool_type)
         clash_file = self.cf.get_file_from_r2(f"{self.tool_type}.yaml")
@@ -98,9 +110,12 @@ class RemoteProxyConfig:
 
         return yaml_data
 
-    def singbox_remote_proxy_config(self):
+    def singbox_remote_proxy_config(self) -> str:
         """
         Get sing-box remote proxy config
+
+        Returns:
+            str: JSON formatted sing-box configuration with proxies
         """
 
         def add_proxy_chain(proxies: list):
@@ -121,13 +136,16 @@ class RemoteProxyConfig:
             singbox_configuration_template, "tag", "outbounds", "outbounds"
         )
 
-        json_data = json.dumps(singbox_configuration, indent=4)
+        json_str = json.dumps(singbox_configuration, indent=4)
 
-        return json_data
+        return json_str
 
-    def shadowrocket_remote_proxy_config(self):
+    def shadowrocket_remote_proxy_config(self) -> bytes:
         """
         Get shadow rocket remote proxy config
+
+        Returns:
+            str: Shadowrocket configuration file content
         """
-        shadowrocket_file = self.cf.get_file_from_r2(f"{self.tool_type}.conf")
-        return shadowrocket_file
+        rocket_file = self.cf.get_file_from_r2(f"{self.tool_type}.conf")
+        return rocket_file

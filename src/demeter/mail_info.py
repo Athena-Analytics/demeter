@@ -1,14 +1,20 @@
-"""Mail info method"""
+"""Mail information fetching module"""
 
 import pandas as pd
 
 from demeter.fetch.mailbox import AnytimeMailbox, IPostalMailbox
-from demeter.utils import get_config, get_object_path, save_df_result
+from demeter.utils import get_config, get_object_path, save_df_to_file
 
 
 def get_anytime_mail_list(country: str, state: str) -> pd.DataFrame:
     """
-    Get anytime mail list
+    Fetches a list of mailboxes from Anytime Mailbox based on country and state
+
+    Args:
+        country (str): Country to filter mailboxes
+        state (str): State to filter mailboxes
+    Returns:
+        pd.DataFrame: DataFrame containing mailbox details
     """
     try:
         headers = {"referer": "https://www.anytimemailbox.com/locations"}
@@ -31,7 +37,12 @@ def get_anytime_mail_list(country: str, state: str) -> pd.DataFrame:
 
 def get_anytime_mail_detail(detail_domain: str) -> dict:
     """
-    Get anytime mail detail
+    Fetches details of a specific mailbox from Anytime Mailbox
+
+    Args:
+        detail_domain (str): Domain of the mailbox detail to fetch
+    Returns:
+        dict: Dictionary containing mailbox functions and carriers
     """
     try:
         headers = {"referer": "https://www.anytimemailbox.com/locations"}
@@ -50,7 +61,13 @@ def get_anytime_mail_detail(detail_domain: str) -> dict:
 
 def chunk_dataframe(df: pd.DataFrame, chunk_size: int = 100) -> list:
     """
-    Chunk dataframe
+    Chunk dataframe into smaller DataFrames of specified size
+
+    Args:
+        df (pd.DataFrame): DataFrame to be chunked
+        chunk_size (int): Size of each chunk
+    Returns:
+        list: List of DataFrame chunks
     """
     if len(df) < chunk_size:
         return [df]
@@ -60,6 +77,12 @@ def chunk_dataframe(df: pd.DataFrame, chunk_size: int = 100) -> list:
 def anytime_mail_result(country: str, state: str) -> pd.DataFrame | None:
     """
     Get anytime mail result
+
+    Args:
+        country (str): Country to filter mailboxes
+        state (str): State to filter mailboxes
+    Returns:
+        pd.DataFrame | None: DataFrame containing mailbox details with functions and carriers
     """
     try:
         mail_list_df = get_anytime_mail_list(country=country, state=state)
@@ -90,7 +113,13 @@ def get_ipostal_mail_list(
     country: str = "usa", state: str = "washington"
 ) -> pd.DataFrame:
     """
-    Get ipostal mail result
+    Fetches a list of mailboxes from iPostal Mail based on country and state
+
+    Args:
+        country (str): Country to filter mailboxes
+        state (str): State to filter mailboxes
+    Returns:
+        pd.DataFrame: DataFrame containing mailbox details with shipping status
     """
     try:
         df = pd.read_json(
@@ -117,6 +146,9 @@ def get_ipostal_mail_list(
 def main(mail_provider: str):
     """
     Main entrance
+
+    Args:
+        mail_provider (str): Mail provider to fetch data from ("anytime", "ipostal", or "test")
     """
     config = get_config()
     states = ""
@@ -134,7 +166,7 @@ def main(mail_provider: str):
 
     for state in states.split(","):
         result = func(country="usa", state=state)
-        save_df_result(
+        save_df_to_file(
             df=result,
             save_type="csv",
             save_params={"table_name": f"{mail_provider}_mail_info_{state}.csv"},
@@ -142,5 +174,4 @@ def main(mail_provider: str):
 
 
 if __name__ == "__main__":
-    main(mail_provider="ipostal")
-    # get_ipostal_mail_list()
+    main("test")
