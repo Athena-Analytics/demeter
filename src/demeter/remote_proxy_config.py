@@ -49,22 +49,29 @@ class RemoteProxyConfig:
         proxy_group_key: str,
     ) -> dict:
 
-        def _replace_jms_template(template: list, j: list) -> list:
+        def _replace_jms_template(template: list | str, j: dict) -> list:
             j_result = []
+
+            if isinstance(template, str):
+                template = [template]
 
             if "JMS" not in ",".join(template):
                 return template
 
             for item in template:
                 if "JMS" in item:
-                    j_number = item.split("-")[1]
-                    j_result.extend([x for x in j if j_number in x])
+                    j_result.append(j[item])
                 else:
                     j_result.append(item)
 
             return j_result
 
-        jms = [p[name_key] for p in temp_config[proxy_key] if "JMS" in p[name_key]]
+        jms_list = [p[name_key] for p in temp_config[proxy_key] if "JMS" in p[name_key]]
+        jms_dict = {
+            f"JMS-{m.group(1)}": jms
+            for jms in jms_list
+            if (m := re.search(r"@c53([^.\s]+).*", jms))
+        }
 
         _new = []
         for group in temp_config[proxy_group_key]:
@@ -77,11 +84,10 @@ class RemoteProxyConfig:
                 "selector",
             ]
             if group["type"] in proxy_type and "JMS" in ",".join(group[proxy_key]):
-
-                group[proxy_key] = _replace_jms_template(group[proxy_key], jms)
+                group[proxy_key] = _replace_jms_template(group[proxy_key], jms_dict)
 
             if "default" in group and "JMS" in group["default"]:
-                group["default"] = _replace_jms_template(group["default"], jms)
+                group["default"] = _replace_jms_template(group["default"], jms_dict)[0]
 
             _new.append(group)
 
