@@ -60,7 +60,7 @@ class RemoteProxyConfig:
 
             for item in template:
                 if "JMS" in item:
-                    j_result.append(j[item])
+                    j_result.extend(j[item])
                 else:
                     j_result.append(item)
 
@@ -68,10 +68,17 @@ class RemoteProxyConfig:
 
         jms_list = [p[name_key] for p in temp_config[proxy_key] if "JMS" in p[name_key]]
         jms_dict = {
-            f"JMS-{m.group(1)}": jms
-            for jms in jms_list
-            if (m := re.search(r"@c53([^.\s]+).*", jms))
+            "JMS-s1": [],
+            "JMS-s2": [],
+            "JMS-s3": [],
+            "JMS-s4": [],
+            "JMS-s5": [],
+            "JMS-s801": [],
         }
+
+        for jms in jms_list:
+            if m := re.search(r"@c\d+([^.\s]+).*", jms):
+                jms_dict[f"JMS-{m.group(1)}"].append(jms)
 
         _new = []
         for group in temp_config[proxy_group_key]:
