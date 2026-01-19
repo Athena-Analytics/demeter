@@ -1,6 +1,6 @@
 [project]
 name = "demeter"
-version = "0.2.2"
+version = "0.2.3"
 description = "Handle all http request"
 authors = [
     { name = "windows@home", email = "programlfyh@proton.me" }
@@ -15,6 +15,7 @@ dependencies = [
     "python-dotenv>=1.0.1",
     "lxml>=5.3.1",
     "pytest>=8.3.5",
+    "beautifulsoup4>=4.13.5",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
