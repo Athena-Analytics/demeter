@@ -139,17 +139,23 @@ class RemoteProxyConfig:
             proxies.append(proxy_chain)
             return proxies
 
-        proxies = add_proxy_chain(self.proxy_config.get_proxies(self.tool_type))
-        singbox_file = self.cf.get_file_from_r2(f"{self.tool_type}.json")
+        proxies = add_proxy_chain(self.proxy_config.get_proxies("singbox"))
+        base_file = self.cf.get_file_from_r2("singbox.json")
 
-        singbox_configuration_template = json.loads(singbox_file)
-        singbox_configuration_template["outbounds"].extend(proxies)
+        base_configuration_template = json.loads(base_file)
+        base_configuration_template["outbounds"].extend(proxies)
 
-        singbox_configuration = self._replace_airport(
-            singbox_configuration_template, "tag", "outbounds", "outbounds"
+        base_configuration = self._replace_airport(
+            base_configuration_template, "tag", "outbounds", "outbounds"
         )
 
-        json_str = json.dumps(singbox_configuration, indent=4)
+        special_file = self.cf.get_file_from_r2(f"{self.tool_type}.json")
+        special_configuration = json.loads(special_file)
+
+        for replace_item in special_configuration["replace_items"]:
+            base_configuration[replace_item].update(special_configuration[replace_item])
+
+        json_str = json.dumps(base_configuration, indent=4)
 
         return json_str
 
